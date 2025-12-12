@@ -1,16 +1,16 @@
-// Megalith x402 Signer & Payload Creator
+// Primer x402 Signer & Payload Creator
 // Version 1.1.0
 // Supports both EIP-3009 and standard ERC-20 tokens
-// Supports BNB Chain (bsc, bsc-testnet) and Base (base, base-sepolia)
-// https://megalithlabs.ai
+// Supports Base (base, base-sepolia)
+// https://primer.systems
 
-console.log("=== Megalith x402 Signer & Payload Creator ===\n");
+console.log("=== Primer x402 Signer & Payload Creator ===\n");
 
 require('dotenv').config({ path: 'signer.env' });
 const { ethers } = require('ethers');
 
 // Facilitator API
-const FACILITATOR_API = process.env.FACILITATOR_API || 'https://x402.megalithlabs.ai';
+const FACILITATOR_API = process.env.FACILITATOR_API || 'https://x402.primer.systems';
 
 // Custom JSON replacer to handle BigInt serialization
 const replacer = (key, value) =>
@@ -20,10 +20,10 @@ const replacer = (key, value) =>
 // HELPER FUNCTIONS
 // ============================================
 
-// Fetch latest Stargate contract from API
-async function fetchStargateContract(network) {
+// Fetch latest Prism contract from API
+async function fetchPrismContract(network) {
   try {
-    console.log("→ Fetching latest Stargate contract from API...");
+    console.log("→ Fetching latest Prism contract from API...");
     const response = await fetch(`${FACILITATOR_API}/contracts`);
     
     if (!response.ok) {
@@ -36,9 +36,9 @@ async function fetchStargateContract(network) {
       throw new Error(`Network ${network} not supported`);
     }
     
-    const { stargate, version } = contracts[network];
-    console.log(`✓ Stargate: ${stargate} (v${version})`);
-    return stargate;
+    const { prism, version } = contracts[network];
+    console.log(`✓ Prism: ${prism} (v${version})`);
+    return prism;
   } catch (error) {
     console.log(`⚠️  Could not fetch from API: ${error.message}`);
     return null;
@@ -50,25 +50,15 @@ async function fetchStargateContract(network) {
   // LOAD CONFIGURATION
   // ============================================
   
-  const NETWORK = process.env.NETWORK || 'bsc';  // Text name like 'bsc', 'bsc-testnet',
+  const NETWORK = process.env.NETWORK || 'base';  // Text name like 'base', 'base-sepolia'
   const PAYER_KEY = process.env.PAYER_KEY;
   const RECIPIENT = process.env.RECIPIENT;
   const TOKEN = process.env.TOKEN;
   const AMOUNT = process.env.AMOUNT;
-  let STARGATE_CONTRACT = process.env.STARGATE_CONTRACT;
+  let PRISM_CONTRACT = process.env.PRISM_CONTRACT;
   
   // Network-specific configuration - text names, not number IDs
   const NETWORK_CONFIG = {
-    'bsc': {
-      name: 'BNB Chain Mainnet',
-      chainId: 56,
-      rpcUrl: process.env.RPC_BSC || 'https://bsc-dataseed.binance.org/'
-    },
-    'bsc-testnet': {
-      name: 'BNB Chain Testnet',
-      chainId: 97,
-      rpcUrl: process.env.RPC_BSC_TESTNET || 'https://data-seed-prebsc-1-s1.binance.org:8545/'
-    },
     'base': {
       name: 'Base Mainnet',
       chainId: 8453,
@@ -88,7 +78,7 @@ async function fetchStargateContract(network) {
   // Validate network
   if (!NETWORK_CONFIG[NETWORK]) {
     console.error("❌ Invalid NETWORK in signer.env");
-    console.error("Supported networks: bsc, bsc-testnet, base, base-sepolia");
+    console.error("Supported networks: base, base-sepolia");
     console.error("You provided:", NETWORK);
     process.exit(1);
   }
@@ -188,45 +178,45 @@ async function fetchStargateContract(network) {
   } catch (e) {
     console.log("Debug: authorizationState call failed:", e.message);
     isEIP3009 = false;
-    console.log("✅ Standard ERC-20 token detected (will use MegalithStargate)");
+    console.log("✅ Standard ERC-20 token detected (will use PrimerPrism)");
   }
 
   // ============================================
-  // GET STARGATE CONTRACT (if needed for ERC-20)
+  // GET PRISM CONTRACT (if needed for ERC-20)
   // ============================================
 
   if (!isEIP3009) {
-    // Only fetch Stargate if we need it (ERC-20 token)
-    if (!STARGATE_CONTRACT || STARGATE_CONTRACT === '') {
-      console.log("\n→ Standard ERC-20 detected, fetching Stargate contract...");
-      STARGATE_CONTRACT = await fetchStargateContract(NETWORK);
+    // Only fetch Prism if we need it (ERC-20 token)
+    if (!PRISM_CONTRACT || PRISM_CONTRACT === '') {
+      console.log("\n→ Standard ERC-20 detected, fetching Prism contract...");
+      PRISM_CONTRACT = await fetchPrismContract(NETWORK);
       
-      if (!STARGATE_CONTRACT) {
-        console.error("\n❌ ERROR: Could not get Stargate contract address");
+      if (!PRISM_CONTRACT) {
+        console.error("\n❌ ERROR: Could not get Prism contract address");
         console.error(`Network: ${networkConfig.name} (${NETWORK}, Chain ID: ${networkConfig.chainId})`);
         console.error("\nFor standard ERC-20 tokens, you must either:");
-        console.error("  1. Let the script fetch from API (leave STARGATE_CONTRACT empty)");
-        console.error("  2. Set STARGATE_CONTRACT manually in signer.env");
+        console.error("  1. Let the script fetch from API (leave PRISM_CONTRACT empty)");
+        console.error("  2. Set PRISM_CONTRACT manually in signer.env");
         console.error("\nExample:");
-        console.error(`  STARGATE_CONTRACT=0x40200001004B5110333e4De8179426971Efd034A`);
+        console.error(`  PRISM_CONTRACT=0x40200001004B5110333e4De8179426971Efd034A`);
         process.exit(1);
       }
     } else {
-      console.log("\n→ Using Stargate from signer.env:", STARGATE_CONTRACT);
+      console.log("\n→ Using Prism from signer.env:", PRISM_CONTRACT);
       
       // Verify with API if possible
-      const apiStargate = await fetchStargateContract(NETWORK);
-      if (apiStargate && apiStargate.toLowerCase() !== STARGATE_CONTRACT.toLowerCase()) {
-        console.log(`⚠️  Warning: Your configured Stargate (${STARGATE_CONTRACT}) differs from API (${apiStargate})`);
+      const apiPrism = await fetchPrismContract(NETWORK);
+      if (apiPrism && apiPrism.toLowerCase() !== PRISM_CONTRACT.toLowerCase()) {
+        console.log(`⚠️  Warning: Your configured Prism (${PRISM_CONTRACT}) differs from API (${apiPrism})`);
         console.log("Continuing with your configured address...");
       }
     }
 
     // Normalize to checksum format
     try {
-      STARGATE_CONTRACT = ethers.getAddress(STARGATE_CONTRACT);
+      PRISM_CONTRACT = ethers.getAddress(PRISM_CONTRACT);
     } catch (error) {
-      console.error("❌ Invalid Stargate contract address:", STARGATE_CONTRACT);
+      console.error("❌ Invalid Prism contract address:", PRISM_CONTRACT);
       process.exit(1);
     }
   }
@@ -340,54 +330,54 @@ async function fetchStargateContract(network) {
     // PATH B: STANDARD ERC-20 TOKEN
     // ============================================
     
-    console.log("\n=== Creating ERC-20 Authorization (MegalithStargate) ===");
-    console.log("Stargate contract:", STARGATE_CONTRACT);
+    console.log("\n=== Creating ERC-20 Authorization (PrimerPrism) ===");
+    console.log("Prism contract:", PRISM_CONTRACT);
 
-    // Check if user has approved the Stargate contract
+    // Check if user has approved the Prism contract
     try {
-      const allowance = await token.allowance(wallet.address, STARGATE_CONTRACT);
+      const allowance = await token.allowance(wallet.address, PRISM_CONTRACT);
       if (allowance < value) {
         console.log("\n⚠️  WARNING: Insufficient approval!");
         console.log("Current allowance:", ethers.formatUnits(allowance, tokenDecimals), tokenSymbol);
         console.log("Required amount:", ethers.formatUnits(value, tokenDecimals), tokenSymbol);
         console.log("\n👉 You must first run: npm run approve");
-        console.log("This will approve the MegalithStargate contract to spend your tokens.");
+        console.log("This will approve the PrimerPrism contract to spend your tokens.");
         console.log("\nContinuing anyway - settlement will fail if approval is not done...\n");
       } else {
-        console.log("✅ Stargate contract has sufficient approval");
+        console.log("✅ Prism contract has sufficient approval");
       }
     } catch (e) {
       console.log("⚠️  Could not check approval status");
     }
 
-    // Get current nonce from Stargate contract
-    const stargateABI = [
+    // Get current nonce from Prism contract
+    const prismABI = [
       'function getNonce(address user, address token) view returns (uint256)'
     ];
-    const stargateContract = new ethers.Contract(STARGATE_CONTRACT, stargateABI, provider);
+    const prismContract = new ethers.Contract(PRISM_CONTRACT, prismABI, provider);
     
     let currentNonce;
     try {
-      currentNonce = await stargateContract.getNonce(wallet.address, TOKEN);
+      currentNonce = await prismContract.getNonce(wallet.address, TOKEN);
       console.log("Current nonce (uint256):", currentNonce.toString());
     } catch (e) {
-      console.error("❌ Failed to fetch nonce from Stargate contract");
-      console.error("Is STARGATE_CONTRACT address correct?");
+      console.error("❌ Failed to fetch nonce from Prism contract");
+      console.error("Is PRISM_CONTRACT address correct?");
       console.error("Error:", e.message);
       process.exit(1);
     }
 
     nonce = currentNonce;
 
-    // EIP-712 domain for MegalithStargate contract
+    // EIP-712 domain for PrimerPrism contract
     domain = {
-      name: "Megalith",
+      name: "Primer",
       version: "1",
       chainId: networkConfig.chainId,
-      verifyingContract: STARGATE_CONTRACT
+      verifyingContract: PRISM_CONTRACT
     };
 
-    // ERC20Payment type definition (matches MegalithStargate contract)
+    // ERC20Payment type definition (matches PrimerPrism contract)
     types = {
       ERC20Payment: [
         { name: 'token', type: 'address' },
@@ -413,7 +403,7 @@ async function fetchStargateContract(network) {
     sig = await wallet.signTypedData(domain, types, message);
 
     console.log("✅ Signature created successfully");
-    console.log("→ Using scheme: exact (Stargate proxy for standard ERC-20)");
+    console.log("→ Using scheme: exact (Prism proxy for standard ERC-20)");
 
     // x402-compliant payload format
     const paymentPayload = {
@@ -445,7 +435,7 @@ async function fetchStargateContract(network) {
       maxTimeoutSeconds: 30,
       asset: TOKEN,
       extra: {
-        stargateContract: STARGATE_CONTRACT,
+        prismContract: PRISM_CONTRACT,
         gasLimit: "300000"
       }
     };
@@ -496,7 +486,7 @@ async function fetchStargateContract(network) {
 
   if (!isEIP3009) {
     console.log("\n⚠️  IMPORTANT: For ERC-20 tokens, run: npm run approve");
-    console.log("    This approves the MegalithStargate contract to spend your tokens.");
+    console.log("    This approves the PrimerPrism contract to spend your tokens.");
   }
 
   console.log("\n💻 Local testing:");
@@ -510,7 +500,7 @@ async function fetchStargateContract(network) {
 
   console.log("✅ x402-compliant payment authorization created successfully!");
   console.log("Network:", networkConfig.name, `(${NETWORK}, Chain ID: ${networkConfig.chainId})`);
-  console.log("Type:", isEIP3009 ? "EIP-3009 (direct)" : "ERC-20 (via MegalithStargate)");
+  console.log("Type:", isEIP3009 ? "EIP-3009 (direct)" : "ERC-20 (via PrimerPrism)");
   console.log("From:", wallet.address);
   console.log("To:", RECIPIENT);
   console.log("Amount:", ethers.formatUnits(value, tokenDecimals), tokenSymbol || "tokens");

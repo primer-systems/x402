@@ -1,7 +1,7 @@
-// Megalith x402 - Payer Functions
+// Primer x402 - Payer Functions
 // Wrap HTTP clients to automatically handle 402 Payment Required responses
 // Supports both ethers and viem signers
-// https://megalithlabs.ai
+// https://primer.systems
 
 const { ethers } = require('ethers');
 const {
@@ -101,7 +101,7 @@ async function verifyPayment(payment, requirements, facilitator, timeoutMs = FAC
  * @returns {Function} Wrapped fetch function
  *
  * @example
- * const signer = await createSigner('bsc', privateKey);
+ * const signer = await createSigner('base', privateKey);
  * const fetchWithPay = x402Fetch(fetch, signer, { maxAmount: '0.50' });
  * const response = await fetchWithPay('https://api.example.com/data');
  */
@@ -187,7 +187,7 @@ function x402Fetch(fetch, signer, options = {}) {
  * @returns {Object} Axios instance with payment interceptor
  *
  * @example
- * const signer = await createSigner('bsc', privateKey);
+ * const signer = await createSigner('base', privateKey);
  * const axiosWithPay = x402Axios(axios.create(), signer, { maxAmount: '0.50' });
  * const response = await axiosWithPay.get('https://api.example.com/data');
  */
@@ -344,32 +344,32 @@ async function createPayment(signer, requirements, facilitator) {
       nonce
     };
   } else {
-    // Standard ERC-20 via Stargate
-    const stargateAddress = await fetchStargateAddress(network.name, facilitator);
+    // Standard ERC-20 via Prism
+    const prismAddress = await fetchPrismAddress(network.name, facilitator);
 
     // Check allowance before proceeding
-    const allowance = await checkAllowance(signer, tokenAddress, address, stargateAddress);
+    const allowance = await checkAllowance(signer, tokenAddress, address, prismAddress);
     if (allowance < BigInt(value)) {
       const error = new Error(
         `Insufficient allowance for ${tokenAddress}. ` +
         `Required: ${value}, Current: ${allowance.toString()}. ` +
-        `Use approveToken() to approve the Stargate contract.`
+        `Use approveToken() to approve the Prism contract.`
       );
       error.code = 'INSUFFICIENT_ALLOWANCE';
       error.required = value;
       error.current = allowance.toString();
       error.token = tokenAddress;
-      error.spender = stargateAddress;
+      error.spender = prismAddress;
       throw error;
     }
 
-    const nonce = await getStargateNonce(signer, stargateAddress, address, tokenAddress);
+    const nonce = await getPrismNonce(signer, prismAddress, address, tokenAddress);
 
     const domain = {
-      name: 'Megalith',
+      name: 'Primer',
       version: '1',
       chainId: network.chainId,
-      verifyingContract: stargateAddress
+      verifyingContract: prismAddress
     };
 
     const types = {
@@ -570,7 +570,7 @@ async function getTokenDecimals(signer, tokenAddress) {
 }
 
 /**
- * Check token allowance for Stargate contract
+ * Check token allowance for Prism contract
  * @private
  */
 async function checkAllowance(signer, tokenAddress, ownerAddress, spenderAddress) {
@@ -613,8 +613,8 @@ async function approveToken(signer, tokenAddress, options = {}) {
   const network = signer.getNetwork();
   const address = signer.getAddress();
 
-  // Get Stargate address
-  const stargateAddress = await fetchStargateAddress(network.name, facilitator);
+  // Get Prism address
+  const prismAddress = await fetchPrismAddress(network.name, facilitator);
 
   // Determine approval amount (default: unlimited)
   const amount = options.amount ? BigInt(options.amount) : ethers.MaxUint256;
@@ -628,7 +628,7 @@ async function approveToken(signer, tokenAddress, options = {}) {
       address: tokenAddress,
       abi: TOKEN_ABI_VIEM,
       functionName: 'approve',
-      args: [stargateAddress, amount]
+      args: [prismAddress, amount]
     });
 
     // Wait for transaction
@@ -637,7 +637,7 @@ async function approveToken(signer, tokenAddress, options = {}) {
       hash: receipt.transactionHash,
       blockNumber: receipt.blockNumber,
       status: receipt.status === 'success' ? 1 : 0,
-      spender: stargateAddress,
+      spender: prismAddress,
       amount: amount.toString()
     };
   } else {
@@ -645,28 +645,28 @@ async function approveToken(signer, tokenAddress, options = {}) {
     const wallet = signer.getWallet();
     const token = new ethers.Contract(tokenAddress, TOKEN_ABI_ETHERS, wallet);
 
-    const tx = await token.approve(stargateAddress, amount);
+    const tx = await token.approve(prismAddress, amount);
     const receipt = await tx.wait();
 
     return {
       hash: receipt.hash,
       blockNumber: receipt.blockNumber,
       status: receipt.status,
-      spender: stargateAddress,
+      spender: prismAddress,
       amount: amount.toString()
     };
   }
 }
 
 /**
- * Get Stargate nonce for ERC-20 payments
+ * Get Prism nonce for ERC-20 payments
  * @private
  */
-async function getStargateNonce(signer, stargateAddress, userAddress, tokenAddress) {
+async function getPrismNonce(signer, prismAddress, userAddress, tokenAddress) {
   if (signer.isViem) {
     const publicClient = signer.getPublicClient();
     return await publicClient.readContract({
-      address: stargateAddress,
+      address: prismAddress,
       abi: [{
         name: 'getNonce',
         type: 'function',
@@ -682,9 +682,9 @@ async function getStargateNonce(signer, stargateAddress, userAddress, tokenAddre
     });
   } else {
     const provider = signer.getProvider();
-    const stargateABI = ['function getNonce(address user, address token) view returns (uint256)'];
-    const stargate = new ethers.Contract(stargateAddress, stargateABI, provider);
-    return await stargate.getNonce(userAddress, tokenAddress);
+    const prismABI = ['function getNonce(address user, address token) view returns (uint256)'];
+    const prism = new ethers.Contract(prismAddress, prismABI, provider);
+    return await prism.getNonce(userAddress, tokenAddress);
   }
 }
 
@@ -703,10 +703,10 @@ function generateRandomBytes32() {
 }
 
 /**
- * Fetch Stargate contract address from facilitator
+ * Fetch Prism contract address from facilitator
  * @private
  */
-async function fetchStargateAddress(network, facilitator, timeoutMs = FACILITATOR_TIMEOUT_MS) {
+async function fetchPrismAddress(network, facilitator, timeoutMs = FACILITATOR_TIMEOUT_MS) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -715,13 +715,13 @@ async function fetchStargateAddress(network, facilitator, timeoutMs = FACILITATO
       signal: controller.signal
     });
     if (!response.ok) {
-      throw new Error(`Failed to fetch Stargate address: ${response.status}`);
+      throw new Error(`Failed to fetch Prism address: ${response.status}`);
     }
     const contracts = await response.json();
     if (!contracts[network]) {
       throw new Error(`Network ${network} not supported`);
     }
-    return contracts[network].stargate;
+    return contracts[network].prism;
   } catch (error) {
     if (error.name === 'AbortError') {
       const err = new Error(`Facilitator request timed out after ${timeoutMs}ms. The facilitator may be temporarily unavailable - please retry.`);

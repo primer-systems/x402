@@ -1,6 +1,6 @@
-// Megalith x402
+// Primer x402
 // JavaScript SDK for x402 payments
-// https://megalithlabs.ai | https://x402.org
+// https://primer.systems | https://x402.org
 
 // Signer
 const { createSigner, NETWORKS } = require('./signer');

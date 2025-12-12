@@ -1,6 +1,6 @@
-// Megalith x402 - Payee Middleware
+// Primer x402 - Payee Middleware
 // Middleware to charge for API access via x402 payments
-// https://megalithlabs.ai
+// https://primer.systems
 
 const { ethers } = require('ethers');
 const {
@@ -108,7 +108,7 @@ async function toAtomicUnits(amount, asset, network) {
  * Express middleware to require x402 payment for routes
  *
  * @param {string} payTo - Address to receive payments
- * @param {Object} routes - Route configuration { '/path': { amount: '0.01', asset: '0x...', network: 'bsc' } }
+ * @param {Object} routes - Route configuration { '/path': { amount: '0.01', asset: '0x...', network: 'base' } }
  * @param {Object} options - Options
  * @param {string} options.facilitator - Custom facilitator URL
  * @returns {Function} Express middleware
@@ -118,8 +118,8 @@ async function toAtomicUnits(amount, asset, network) {
  * app.use(x402Express('0xYourAddress', {
  *   '/api/premium': {
  *     amount: '0.01',           // 0.01 tokens (human-readable)
- *     asset: '0x...',     // token on Bsc
- *     network: 'bsc'
+ *     asset: '0x...',     // token on Base
+ *     network: 'base'
  *   }
  * }));
  */
@@ -196,7 +196,7 @@ function x402Express(payTo, routes, options = {}) {
  * @example
  * const app = new Hono();
  * app.use('*', x402Hono('0xYourAddress', {
- *   '/api/premium': { amount: '0.01', asset: '0x...', network: 'bsc' }
+ *   '/api/premium': { amount: '0.01', asset: '0x...', network: 'base' }
  * }));
  */
 function x402Hono(payTo, routes, options = {}) {
@@ -269,7 +269,7 @@ function x402Hono(payTo, routes, options = {}) {
  *
  * @example App Router (Next.js 13+)
  * // app/api/premium/route.js
- * import { x402Next } from '@megalithlabs/x402';
+ * import { x402Next } from '@primersystems/x402';
  *
  * async function handler(req) {
  *   return Response.json({ data: 'premium content' });
@@ -279,7 +279,7 @@ function x402Hono(payTo, routes, options = {}) {
  *   payTo: '0xYourAddress',
  *   amount: '0.01',
  *   asset: '0x...',
- *   network: 'bsc'
+ *   network: 'base'
  * });
  *
  * @example Pages Router (legacy)
@@ -288,7 +288,7 @@ function x402Hono(payTo, routes, options = {}) {
  *   async (req, res) => {
  *     res.json({ data: 'premium content' });
  *   },
- *   { payTo: '0x...', amount: '0.01', asset: '0x...', network: 'bsc' }
+ *   { payTo: '0x...', amount: '0.01', asset: '0x...', network: 'base' }
  * );
  */
 function x402Next(handler, config, options = {}) {

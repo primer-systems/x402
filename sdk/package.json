@@ -1,5 +1,5 @@
 {
-  "name": "@megalithlabs/x402",
+  "name": "@primersystems/x402",
   "version": "0.1.3",
   "description": "JavaScript SDK for x402 payments - pay and charge for APIs with stablecoins",
   "main": "index.js",
@@ -15,7 +15,6 @@
     "stablecoin",
     "ethereum",
     "base",
-    "bnb",
     "eip-3009",
     "web3",
     "ai-payments",
@@ -23,16 +22,16 @@
     "http-402",
     "ai-agents"
   ],
-  "author": "Megalith Labs <support@megalithlabs.ai>",
+  "author": "Primer Systems <support@primer.systems>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MegalithLabs/x402.git",
+    "url": "https://github.com/PrimerSystems/x402.git",
     "directory": "sdk"
   },
   "homepage": "https://x402.org",
   "bugs": {
-    "url": "https://github.com/MegalithLabs/x402/issues"
+    "url": "https://github.com/PrimerSystems/x402/issues"
   },
   "files": [
     "index.js",

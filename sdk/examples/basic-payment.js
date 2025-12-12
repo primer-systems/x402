@@ -2,7 +2,7 @@
 // Demonstrates using x402Fetch to pay for an API
 //
 // Usage:
-//   PRIVATE_KEY=0x... NETWORK=bsc MAX_AMOUNT=0.10 API_URL=https://api.example.com node basic-payment.js
+//   PRIVATE_KEY=0x... NETWORK=base MAX_AMOUNT=0.10 API_URL=https://api.example.com node basic-payment.js
 //
 // Or with dotenv (install separately: npm install dotenv):
 //   Create .env file, then: node -r dotenv/config basic-payment.js
@@ -10,7 +10,7 @@
 const { createSigner, x402Fetch } = require('../');
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const NETWORK = process.env.NETWORK || 'bsc';
+const NETWORK = process.env.NETWORK || 'base';
 const API_URL = process.env.API_URL;
 const MAX_AMOUNT = process.env.MAX_AMOUNT;
 
@@ -19,11 +19,11 @@ async function main() {
     console.error('Missing PRIVATE_KEY environment variable');
     console.error('');
     console.error('Usage:');
-    console.error('  PRIVATE_KEY=0x... NETWORK=bsc MAX_AMOUNT=0.10 API_URL=https://api.example.com node basic-payment.js');
+    console.error('  PRIVATE_KEY=0x... NETWORK=base MAX_AMOUNT=0.10 API_URL=https://api.example.com node basic-payment.js');
     console.error('');
     console.error('Environment variables:');
     console.error('  PRIVATE_KEY  - Your wallet private key (required)');
-    console.error('  NETWORK      - Network name: bsc, bsc-testnet (default: bsc)');
+    console.error('  NETWORK      - Network name: base, base-sepolia (default: base)');
     console.error('  MAX_AMOUNT   - Maximum tokens to pay per request (required)');
     console.error('  API_URL      - The paid API endpoint to call (required)');
     process.exit(1);

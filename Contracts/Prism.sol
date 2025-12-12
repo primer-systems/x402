@@ -9,12 +9,12 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
- * @title Megalith_Stargate_v1.0
- * @author Megalith Labs
- * @notice Settlement gateway for Megalith x402 ERC-20 payments
+ * @title Primer_Prism_v1.0
+ * @author Primer Systems
+ * @notice Settlement gateway for Primer x402 ERC-20 payments
  * @dev Handles standard ERC-20 tokens that require approval (EIP-3009 tokens are settled directly by the facilitator)
  */
-contract MegalithStargate is Ownable2Step, ReentrancyGuard, Pausable {
+contract PrimerPrism is Ownable2Step, ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
     using ECDSA for bytes32;
     
@@ -372,7 +372,7 @@ contract MegalithStargate is Ownable2Step, ReentrancyGuard, Pausable {
         return keccak256(
             abi.encode(
                 EIP712_DOMAIN_TYPEHASH,
-                keccak256("Megalith"),
+                keccak256("Primer"),
                 keccak256("1"),
                 block.chainid,
                 address(this)
