@@ -1,6 +1,6 @@
-// Megalith x402 - Shared Utilities
+// Primer x402 - Shared Utilities
 // Common functions and constants used across the SDK
-// https://megalithlabs.ai
+// https://primersystems.ai
 
 const debug = require('debug');
 
@@ -17,23 +17,13 @@ const createDebugLogger = (namespace) => debug(`x402:${namespace}`);
 // ============================================
 
 // Default facilitator URL
-const DEFAULT_FACILITATOR = 'https://x402.megalithlabs.ai';
+const DEFAULT_FACILITATOR = 'https://x402.primersystems.ai';
 
 // Default timeout for facilitator requests (10 seconds)
 const FACILITATOR_TIMEOUT_MS = 10000;
 
 // Network configurations with env var overrides
 const NETWORKS = {
-  'bsc': {
-    name: 'BNB Chain Mainnet',
-    chainId: 56,
-    rpcUrl: process.env.RPC_BSC || 'https://bsc-dataseed.binance.org/'
-  },
-  'bsc-testnet': {
-    name: 'BNB Chain Testnet',
-    chainId: 97,
-    rpcUrl: process.env.RPC_BSC_TESTNET || 'https://data-seed-prebsc-1-s1.binance.org:8545/'
-  },
   'base': {
     name: 'Base Mainnet',
     chainId: 8453,
@@ -43,7 +33,7 @@ const NETWORKS = {
     name: 'Base Sepolia',
     chainId: 84532,
     rpcUrl: process.env.RPC_BASE_SEPOLIA || 'https://sepolia.base.org/'
-  }  
+  }
 };
 
 // ============================================

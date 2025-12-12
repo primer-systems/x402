@@ -1,7 +1,7 @@
-// Megalith x402 - Payer Functions
+// Primer x402 - Payer Functions
 // Wrap HTTP clients to automatically handle 402 Payment Required responses
 // Supports both ethers and viem signers
-// https://megalithlabs.ai
+// https://primersystems.ai
 
 const { ethers } = require('ethers');
 const {
@@ -101,7 +101,7 @@ async function verifyPayment(payment, requirements, facilitator, timeoutMs = FAC
  * @returns {Function} Wrapped fetch function
  *
  * @example
- * const signer = await createSigner('bsc', privateKey);
+ * const signer = await createSigner('base', privateKey);
  * const fetchWithPay = x402Fetch(fetch, signer, { maxAmount: '0.50' });
  * const response = await fetchWithPay('https://api.example.com/data');
  */
@@ -187,7 +187,7 @@ function x402Fetch(fetch, signer, options = {}) {
  * @returns {Object} Axios instance with payment interceptor
  *
  * @example
- * const signer = await createSigner('bsc', privateKey);
+ * const signer = await createSigner('base', privateKey);
  * const axiosWithPay = x402Axios(axios.create(), signer, { maxAmount: '0.50' });
  * const response = await axiosWithPay.get('https://api.example.com/data');
  */
@@ -366,7 +366,7 @@ async function createPayment(signer, requirements, facilitator) {
     const nonce = await getStargateNonce(signer, stargateAddress, address, tokenAddress);
 
     const domain = {
-      name: 'Megalith',
+      name: 'Primer',
       version: '1',
       chainId: network.chainId,
       verifyingContract: stargateAddress

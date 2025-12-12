@@ -1,16 +1,16 @@
-// Megalith x402 Signer & Payload Creator
+// Primer x402 Signer & Payload Creator
 // Version 1.1.0
 // Supports both EIP-3009 and standard ERC-20 tokens
-// Supports BNB Chain (bsc, bsc-testnet) and Base (base, base-sepolia)
-// https://megalithlabs.ai
+// Supports Base (base, base-sepolia)
+// https://primersystems.ai
 
-console.log("=== Megalith x402 Signer & Payload Creator ===\n");
+console.log("=== Primer x402 Signer & Payload Creator ===\n");
 
 require('dotenv').config({ path: 'signer.env' });
 const { ethers } = require('ethers');
 
 // Facilitator API
-const FACILITATOR_API = process.env.FACILITATOR_API || 'https://x402.megalithlabs.ai';
+const FACILITATOR_API = process.env.FACILITATOR_API || 'https://x402.primersystems.ai';
 
 // Custom JSON replacer to handle BigInt serialization
 const replacer = (key, value) =>
@@ -50,7 +50,7 @@ async function fetchStargateContract(network) {
   // LOAD CONFIGURATION
   // ============================================
   
-  const NETWORK = process.env.NETWORK || 'bsc';  // Text name like 'bsc', 'bsc-testnet',
+  const NETWORK = process.env.NETWORK || 'base';  // Text name like 'base', 'base-sepolia'
   const PAYER_KEY = process.env.PAYER_KEY;
   const RECIPIENT = process.env.RECIPIENT;
   const TOKEN = process.env.TOKEN;
@@ -59,16 +59,6 @@ async function fetchStargateContract(network) {
   
   // Network-specific configuration - text names, not number IDs
   const NETWORK_CONFIG = {
-    'bsc': {
-      name: 'BNB Chain Mainnet',
-      chainId: 56,
-      rpcUrl: process.env.RPC_BSC || 'https://bsc-dataseed.binance.org/'
-    },
-    'bsc-testnet': {
-      name: 'BNB Chain Testnet',
-      chainId: 97,
-      rpcUrl: process.env.RPC_BSC_TESTNET || 'https://data-seed-prebsc-1-s1.binance.org:8545/'
-    },
     'base': {
       name: 'Base Mainnet',
       chainId: 8453,
@@ -88,7 +78,7 @@ async function fetchStargateContract(network) {
   // Validate network
   if (!NETWORK_CONFIG[NETWORK]) {
     console.error("❌ Invalid NETWORK in signer.env");
-    console.error("Supported networks: bsc, bsc-testnet, base, base-sepolia");
+    console.error("Supported networks: base, base-sepolia");
     console.error("You provided:", NETWORK);
     process.exit(1);
   }
@@ -188,7 +178,7 @@ async function fetchStargateContract(network) {
   } catch (e) {
     console.log("Debug: authorizationState call failed:", e.message);
     isEIP3009 = false;
-    console.log("✅ Standard ERC-20 token detected (will use MegalithStargate)");
+    console.log("✅ Standard ERC-20 token detected (will use PrimerStargate)");
   }
 
   // ============================================
@@ -340,7 +330,7 @@ async function fetchStargateContract(network) {
     // PATH B: STANDARD ERC-20 TOKEN
     // ============================================
     
-    console.log("\n=== Creating ERC-20 Authorization (MegalithStargate) ===");
+    console.log("\n=== Creating ERC-20 Authorization (PrimerStargate) ===");
     console.log("Stargate contract:", STARGATE_CONTRACT);
 
     // Check if user has approved the Stargate contract
@@ -351,7 +341,7 @@ async function fetchStargateContract(network) {
         console.log("Current allowance:", ethers.formatUnits(allowance, tokenDecimals), tokenSymbol);
         console.log("Required amount:", ethers.formatUnits(value, tokenDecimals), tokenSymbol);
         console.log("\n👉 You must first run: npm run approve");
-        console.log("This will approve the MegalithStargate contract to spend your tokens.");
+        console.log("This will approve the PrimerStargate contract to spend your tokens.");
         console.log("\nContinuing anyway - settlement will fail if approval is not done...\n");
       } else {
         console.log("✅ Stargate contract has sufficient approval");
@@ -379,15 +369,15 @@ async function fetchStargateContract(network) {
 
     nonce = currentNonce;
 
-    // EIP-712 domain for MegalithStargate contract
+    // EIP-712 domain for PrimerStargate contract
     domain = {
-      name: "Megalith",
+      name: "Primer",
       version: "1",
       chainId: networkConfig.chainId,
       verifyingContract: STARGATE_CONTRACT
     };
 
-    // ERC20Payment type definition (matches MegalithStargate contract)
+    // ERC20Payment type definition (matches PrimerStargate contract)
     types = {
       ERC20Payment: [
         { name: 'token', type: 'address' },
@@ -496,7 +486,7 @@ async function fetchStargateContract(network) {
 
   if (!isEIP3009) {
     console.log("\n⚠️  IMPORTANT: For ERC-20 tokens, run: npm run approve");
-    console.log("    This approves the MegalithStargate contract to spend your tokens.");
+    console.log("    This approves the PrimerStargate contract to spend your tokens.");
   }
 
   console.log("\n💻 Local testing:");
@@ -510,7 +500,7 @@ async function fetchStargateContract(network) {
 
   console.log("✅ x402-compliant payment authorization created successfully!");
   console.log("Network:", networkConfig.name, `(${NETWORK}, Chain ID: ${networkConfig.chainId})`);
-  console.log("Type:", isEIP3009 ? "EIP-3009 (direct)" : "ERC-20 (via MegalithStargate)");
+  console.log("Type:", isEIP3009 ? "EIP-3009 (direct)" : "ERC-20 (via PrimerStargate)");
   console.log("From:", wallet.address);
   console.log("To:", RECIPIENT);
   console.log("Amount:", ethers.formatUnits(value, tokenDecimals), tokenSymbol || "tokens");

@@ -1,10 +1,10 @@
-# Megalith x402
+# Primer x402
 
 **x402-compliant payment system** for EVM-compatible blockchains supporting both EIP-3009 and standard ERC-20 tokens.
 
 **Part of the x402 protocol**: An open standard for internet-native payments using HTTP 402 status codes.
 
-Learn more: [x402.org](https://x402.org) | [Megalith Labs](https://megalithlabs.ai)
+Learn more: [x402.org](https://x402.org) | [Primer Systems](https://primersystems.ai)
 
 ---
 
@@ -25,16 +25,16 @@ x402 is an open payment protocol that enables AI agents and web services to auto
 ### Install the SDK
 
 ```bash
-npm install @megalithlabs/x402
+npm install @primersystems/x402
 ```
 
 ### Pay for APIs (Payer)
 
 ```javascript
-const { createSigner, x402Fetch } = require('@megalithlabs/x402');
+const { createSigner, x402Fetch } = require('@primersystems/x402');
 
 // Create signer with your wallet
-const signer = await createSigner('bsc', process.env.PRIVATE_KEY);
+const signer = await createSigner('base', process.env.PRIVATE_KEY);
 
 // Wrap fetch to auto-handle 402 responses
 const fetchWithPay = x402Fetch(fetch, signer, { maxAmount: '0.50' });
@@ -47,17 +47,17 @@ const response = await fetchWithPay('https://api.example.com/premium-data');
 
 ```javascript
 const express = require('express');
-const { x402Express } = require('@megalithlabs/x402');
+const { x402Express } = require('@primersystems/x402');
 
 const app = express();
-const USDT = '0x55d398326f99059fF775485246999027B3197955'; // USDT on BSC
+const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // USDC on Base
 
 // Add payment requirement to routes
 app.use(x402Express('0xYourWalletAddress', {
   '/api/premium': {
-    amount: '0.01',      // 0.01 USDT
-    asset: USDT,
-    network: 'bsc'
+    amount: '0.01',      // 0.01 USDC
+    asset: USDC,
+    network: 'base'
   }
 }));
 
@@ -74,9 +74,9 @@ app.get('/api/premium', (req, res) => {
 
 | Folder | Description |
 |--------|-------------|
-| **[sdk/](sdk/)** | JavaScript SDK for payers and payees - `npm install @megalithlabs/x402` |
+| **[sdk/](sdk/)** | JavaScript SDK for payers and payees - `npm install @primersystems/x402` |
 | **[tools/](tools/)** | CLI tools for manual testing and token approval |
-| **[Contracts/](Contracts/)** | MegalithStargate smart contract source |
+| **[Contracts/](Contracts/)** | PrimerStargate smart contract source |
 | **[Docs/](Docs/)** | Facilitator API guide and protocol documentation |
 
 ---
@@ -85,8 +85,6 @@ app.get('/api/premium', (req, res) => {
 
 | Network | Chain ID | Status |
 |---------|----------|--------|
-| **BNB Chain Mainnet** | 56 | Production |
-| **BNB Chain Testnet** | 97 | Testnet |
 | **Base Mainnet** | 8453 | Production |
 | **Base Sepolia** | 84532 | Testnet |
 
@@ -99,7 +97,7 @@ app.get('/api/premium', (req, res) => {
 - **EURC** - Direct authorization, no approval needed
 
 ### Standard ERC-20 Tokens (via Stargate)
-- **USDT, DAI, BUSD, any ERC-20** - Requires one-time approval
+- **USDT, DAI, any ERC-20** - Requires one-time approval
 
 The SDK automatically detects which type of token you're using.
 
@@ -107,7 +105,7 @@ The SDK automatically detects which type of token you're using.
 
 ## x402 Facilitator API
 
-**Production:** https://x402.megalithlabs.ai
+**Production:** https://x402.primersystems.ai
 
 | Endpoint | Description |
 |----------|-------------|
@@ -121,7 +119,7 @@ The SDK automatically detects which type of token you're using.
 
 ---
 
-## MegalithStargate Contract
+## PrimerStargate Contract
 
 Enables x402 payments with standard ERC-20 tokens that lack native EIP-3009 support.
 
@@ -133,10 +131,10 @@ Enables x402 payments with standard ERC-20 tokens that lack native EIP-3009 supp
 
 ## Support
 
-- Website: https://megalithlabs.ai
+- Website: https://primersystems.ai
 - x402 Protocol: https://x402.org
-- Email: support@megalithlabs.ai
-- Issues: https://github.com/megalithlabs/x402/issues
+- Email: support@primersystems.ai
+- Issues: https://github.com/primersystems/x402/issues
 
 ---
 

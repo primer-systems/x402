@@ -1,10 +1,10 @@
-# Megalith x402 Payment Signer
+# Primer x402 Payment Signer
 
 Create x402-compliant payment authorizations for both EIP-3009 and standard ERC-20 tokens.
 
 **Part of the x402 protocol**: An open standard for internet-native payments using HTTP 402 status codes.
 
-Learn more: [x402.org](https://x402.org) | [Megalith Labs](https://megalithlabs.ai)
+Learn more: [x402.org](https://x402.org) | [Primer Systems](https://primersystems.ai)
 
 ---
 
@@ -14,7 +14,7 @@ x402 is an open payment protocol that enables AI agents and web services to auto
 
 - 🤖 **AI-native payments** - Agents pay for APIs autonomously
 - 💰 **Micropayments** - Transactions as low as $0.001
-- ⚡ **Instant settlement** - ~3 seconds on BNB Chain
+- ⚡ **Instant settlement** - ~3 seconds on Base
 - 🔓 **No accounts required** - Pay-per-use without registration
 - 🌐 **Chain agnostic** - Works on any blockchain
 
@@ -26,8 +26,8 @@ This signer creates x402-compliant payment authorizations that can be used with 
 
 - ✅ **x402 Protocol Compliant**: Outputs standard x402 v1 payment payloads
 - ✅ **EIP-3009 Support**: Direct authorization for USDC and other EIP-3009 tokens
-- ✅ **Standard ERC-20 Support**: Works with any ERC-20 token via MegalithStargate
-- ✅ **Multi-Network**: Supports BNB Chain and Base (mainnet and testnet)
+- ✅ **Standard ERC-20 Support**: Works with any ERC-20 token via PrimerStargate
+- ✅ **Multi-Network**: Supports Base and Base (mainnet and testnet)
 - ✅ **Automatic Token Detection**: Auto-detects EIP-3009 vs ERC-20 and signs appropriately
 - ✅ **API Contract Fetching**: Automatically uses latest Stargate contract version
 - ✅ **Token Approval Tool**: Easy approval for standard ERC-20 tokens
@@ -55,7 +55,7 @@ nano signer.env
 
 **Required fields:**
 ```bash
-NETWORK=bsc             # bsc, bsc-testnet, base, base-sepolia
+NETWORK=base             # base-sepolia, base, base-sepolia
 PAYER_KEY=0x...         # Your private key
 RECIPIENT=0x...         # Token recipient
 TOKEN=0x...             # Token contract address
@@ -63,7 +63,7 @@ AMOUNT=10.0             # Human-readable amount (e.g., 10.5 USDC)
 
 # Optional - leave empty to auto-fetch from API
 STARGATE_CONTRACT=
-FACILITATOR_API=https://x402.megalithlabs.ai
+FACILITATOR_API=https://x402.primersystems.ai
 ```
 
 ### 3. Approve Token (Standard ERC-20 Only)
@@ -93,7 +93,7 @@ This creates:
 **Verify the payment is valid (without executing):**
 
 ```bash
-curl -X POST https://x402.megalithlabs.ai/verify \
+curl -X POST https://x402.primersystems.ai/verify \
      -H "Content-Type: application/json" \
      -d @payload.json
 ```
@@ -101,14 +101,14 @@ curl -X POST https://x402.megalithlabs.ai/verify \
 **Settle the payment on-chain:**
 
 ```bash
-curl -X POST https://x402.megalithlabs.ai/settle \
+curl -X POST https://x402.primersystems.ai/settle \
      -H "Content-Type: application/json" \
      -d @payload.json
 ```
 
 **Windows PowerShell users:**
 ```powershell
-curl.exe -X POST https://x402.megalithlabs.ai/settle --% -H "Content-Type: application/json" -d @payload.json
+curl.exe -X POST https://x402.primersystems.ai/settle --% -H "Content-Type: application/json" -d @payload.json
 ```
 
 ---
@@ -117,12 +117,11 @@ curl.exe -X POST https://x402.megalithlabs.ai/settle --% -H "Content-Type: appli
 
 | Network Name | Chain ID | Description |
 |-------------|----------|-------------|
-| `bsc` | 56 | BNB Chain Mainnet |
-| `bsc-testnet` | 97 | BNB Chain Testnet |
+| `base-sepolia` | - | Base Sepolia |
 | `base` | 8453 | Base Mainnet |
 | `base-sepolia` | 84532 | Base Sepolia Testnet |
 
-Always use **text network names** (e.g., `"bsc"`), not numeric chain IDs.
+Always use **text network names** (e.g., `"base"`), not numeric chain IDs.
 
 ---
 
@@ -141,12 +140,12 @@ Always use **text network names** (e.g., `"bsc"`), not numeric chain IDs.
 
 ### Standard ERC-20 Tokens (e.g., USDT, BUSD)
 - ⚠️ **Requires one-time approval** (use `npm run approve`)
-- 🔄 Uses MegalithStargate proxy contract
+- 🔄 Uses PrimerStargate proxy contract
 - ✅ Works with ANY ERC-20 token
 - ✅ Examples: USDT, BUSD, DAI, and any custom token
 
 **How it works:**
-1. User approves MegalithStargate: `token.approve(stargate, amount)`
+1. User approves PrimerStargate: `token.approve(stargate, amount)`
 2. Signer creates authorization signed with Stargate's EIP-712 domain
 3. Facilitator calls `stargate.settleERC20()` which uses the approval
 
@@ -158,13 +157,13 @@ Always use **text network names** (e.g., `"bsc"`), not numeric chain IDs.
 
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
-| `NETWORK` | Yes | Network name | `bsc`, `bsc-testnet`, `base`, or `base-sepolia` |
+| `NETWORK` | Yes | Network name | `base` or `base-sepolia` |
 | `PAYER_KEY` | Yes | Payer's private key | `0x1234...` |
 | `RECIPIENT` | Yes | Recipient address | `0x5678...` |
 | `TOKEN` | Yes | Token contract address | `0xabcd...` |
 | `AMOUNT` | Yes | Amount in human-readable units | `10.5` |
 | `STARGATE_CONTRACT` | No | Manual Stargate override (leave empty for auto-fetch) | `` |
-| `FACILITATOR_API` | No | Facilitator endpoint | `https://x402.megalithlabs.ai` |
+| `FACILITATOR_API` | No | Facilitator endpoint | `https://x402.primersystems.ai` |
 
 ### Amount Format
 
@@ -204,7 +203,7 @@ npm run approve
 | `TOKEN` | Yes | Token contract address | `0x55d3...` |
 | `STARGATE_CONTRACT` | No | Manual override (leave empty) | `` |
 | `AMOUNT` | No | Approval amount | `unlimited` or `1000.0` |
-| `FACILITATOR_API` | No | API endpoint | `https://x402.megalithlabs.ai` |
+| `FACILITATOR_API` | No | API endpoint | `https://x402.primersystems.ai` |
 
 ### Approval Options
 
@@ -227,17 +226,17 @@ AMOUNT=1000.0
 
 ## Common Token Addresses
 
-### BNB Chain Mainnet
+### Base Mainnet
 
 | Token | Type | Address |
 |-------|------|---------|
 | USDC | EIP-3009 | `0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d` |
-| USDT | ERC-20 | `0x55d398326f99059fF775485246999027B3197955` |
+| USDT | ERC-20 | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
 | BUSD | ERC-20 | `0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56` |
 
-### BNB Chain Testnet
+### Base Sepolia
 
-Get testnet tokens from [BSC Testnet Faucet](https://testnet.bnbchain.org/faucet-smart)
+Get testnet tokens from [Base Sepolia Faucet](https://www.coinbase.com/faucets/base-ethereum-sepolia)
 
 ---
 
@@ -251,7 +250,7 @@ The signer creates Coinbase x402 spec-compliant payloads:
   "paymentPayload": {
     "x402Version": 1,
     "scheme": "exact",
-    "network": "bsc",
+    "network": "base",
     "payload": {
       "signature": "0x...",
       "authorization": {
@@ -266,7 +265,7 @@ The signer creates Coinbase x402 spec-compliant payloads:
   },
   "paymentRequirements": {
     "scheme": "exact",
-    "network": "bsc",
+    "network": "base",
     "maxAmountRequired": "1000000",
     "resource": "/api/settlement",
     "description": "Payment of 1.0 USDC",
@@ -282,7 +281,7 @@ The signer creates Coinbase x402 spec-compliant payloads:
 ### Key Fields
 
 - **scheme**: Always `"exact"` - i.e. exact payment required
-- **network**: Text name (`"bsc"`, `"bsc-testnet"`)
+- **network**: Text name (`"base"`, `"base-sepolia"`)
 - **signature**: Full EIP-712 signature as hex string
 - **nonce**: Random bytes32 (EIP-3009) or sequential uint256 (ERC-20)
 - **validAfter/validBefore**: 1 hour validity window
@@ -297,7 +296,7 @@ The signer creates Coinbase x402 spec-compliant payloads:
 Validates signature without executing:
 
 ```bash
-curl -X POST https://x402.megalithlabs.ai/verify \
+curl -X POST https://x402.primersystems.ai/verify \
      -H "Content-Type: application/json" \
      -d @payload.json
 ```
@@ -314,7 +313,7 @@ curl -X POST https://x402.megalithlabs.ai/verify \
 Executes payment on-chain:
 
 ```bash
-curl -X POST https://x402.megalithlabs.ai/settle \
+curl -X POST https://x402.primersystems.ai/settle \
      -H "Content-Type: application/json" \
      -d @payload.json
 ```
@@ -334,22 +333,22 @@ curl -X POST https://x402.megalithlabs.ai/settle \
 Fetch latest Stargate addresses:
 
 ```bash
-curl https://x402.megalithlabs.ai/contracts
+curl https://x402.primersystems.ai/contracts
 ```
 
 **Response:**
 ```json
 {
-  "bsc": {
+  "base": {
     "stargate": "0x40200001004B5110333e4De8179426971Efd034A",
     "version": "1.0.0",
-    "network": "BNB Chain Mainnet",
+    "network": "Base Mainnet",
     "chainId": 56
   },
-  "bsc-testnet": {
+  "base-sepolia": {
     "stargate": "0x40200001004B5110333e4De8179426971Efd034A",
     "version": "1.0.0",
-    "network": "BNB Chain Testnet",
+    "network": "Base Sepolia",
     "chainId": 97
   },
   "base": {
@@ -370,7 +369,7 @@ curl https://x402.megalithlabs.ai/contracts
 ### Health Check
 
 ```bash
-curl https://x402.megalithlabs.ai/health
+curl https://x402.primersystems.ai/health
 ```
 
 **Response:**
@@ -378,12 +377,12 @@ curl https://x402.megalithlabs.ai/health
 {
   "status": "healthy",
   "version": "1.0.0",
-  "facilitator": "Megalith x402 Facilitator",
+  "facilitator": "Primer x402 Facilitator",
   "spec": "https://x402.org",
   "supportedSchemes": ["exact"],
   "networks": {
-    "bsc": {
-      "name": "BNB Chain Mainnet",
+    "base": {
+      "name": "Base Mainnet",
       "chainId": 56,
       "supportsEIP3009": true,
       "supportsExact": true,
@@ -443,12 +442,12 @@ payloads/
 - The facilitator validates `value >= maxAmountRequired`
 
 ### 🌐 Network Selection
-- **bsc** / **base** = Real money (mainnet)
-- **bsc-testnet** / **base-sepolia** = Test tokens only
+- **base** = Real money (mainnet)
+- **base-sepolia** / **base-sepolia** = Test tokens only
 - Always verify network before signing
 
 ### ⚠️ Token Approvals (ERC-20 Only)
-- Only approve trusted contracts (MegalithStargate is audited)
+- Only approve trusted contracts (PrimerStargate is audited)
 - Can revoke approvals anytime via block explorer
 - Unlimited approval is safe - requires your signature to use
 - The contract **CANNOT** move tokens without your signed authorization
@@ -463,7 +462,7 @@ npm install
 ```
 
 ### "Invalid NETWORK in signer.env"
-Use text names: `bsc`, `bsc-testnet`, `base`, or `base-sepolia` (not numbers)
+Use text names: `base` or `base-sepolia` (not numbers)
 
 ### "Could not fetch Stargate contract from API"
 Manually set in signer.env:
@@ -477,7 +476,7 @@ Run the approval tool:
 npm run approve
 ```
 
-Or approve manually via BscScan:
+Or approve manually via BaseScan:
 1. Go to token contract
 2. Connect wallet (Write Contract tab)
 3. Call `approve`:
@@ -504,7 +503,7 @@ npm run sign
 ### Windows PowerShell curl Issues
 Use `curl.exe` with `--%` flag:
 ```powershell
-curl.exe -X POST https://x402.megalithlabs.ai/settle --% -H "Content-Type: application/json" -d @payload.json
+curl.exe -X POST https://x402.primersystems.ai/settle --% -H "Content-Type: application/json" -d @payload.json
 ```
 
 ---
@@ -559,9 +558,9 @@ Both flows:
 
 ---
 
-## What is MegalithStargate?
+## What is PrimerStargate?
 
-MegalithStargate is a proxy contract that brings gasless payment capabilities to standard ERC-20 tokens.
+PrimerStargate is a proxy contract that brings gasless payment capabilities to standard ERC-20 tokens.
 
 ### Why Stargate?
 
@@ -575,7 +574,7 @@ Most ERC-20 tokens don't have native gasless transfer support like EIP-3009 toke
 ### Trust Model
 
 **You trust:**
-- ✅ MegalithStargate contract (audited, open source, non-custodial)
+- ✅ PrimerStargate contract (audited, open source, non-custodial)
 - ✅ Your own signature (you control the private key)
 
 **You don't trust:**
@@ -604,8 +603,8 @@ This implementation follows the x402 v1 specification:
 - `exact` - Exact payment amount required
 
 ### Supported Networks
-- `bsc` (BNB Chain Mainnet, Chain ID 56)
-- `bsc-testnet` (BNB Chain Testnet, Chain ID 97)
+- `base` (Base Mainnet, Chain ID 8453)
+- `base-sepolia` (Base Sepolia, Chain ID 97)
 - `base` (Base Mainnet, Chain ID 8453)
 - `base-sepolia` (Base Sepolia Testnet, Chain ID 84532)
 
@@ -615,18 +614,18 @@ This implementation follows the x402 v1 specification:
 
 ### Settlement
 - Facilitator broadcasts transaction on-chain
-- Instant finality (~3 seconds on BNB Chain)
+- Instant finality (~3 seconds on Base)
 - Gasless for payer (facilitator pays gas)
 
 ---
 
 ## Support
 
-- 🌐 Website: https://megalithlabs.ai
+- 🌐 Website: https://primersystems.ai
 - 🌐 x402 Protocol: https://x402.org
-- 📧 Email: support@megalithlabs.ai
-- 🐛 Issues: https://github.com/megalithlabs/x402/issues
-- 📚 Docs: https://github.com/MegalithLabs/x402
+- 📧 Email: support@primersystems.ai
+- 🐛 Issues: https://github.com/primersystems/x402/issues
+- 📚 Docs: https://github.com/PrimerSystems/x402
 
 ---
 
@@ -641,9 +640,9 @@ MIT License - see LICENSE file for details
 ### v1.0.0 (Current)
 - x402 Protocol v1 compliance
 - EIP-3009 and standard ERC-20 support
-- BNB Chain and Base support (mainnet and testnet)
+- Base and Base support (mainnet and testnet)
 - Automatic token type detection
-- MegalithStargate proxy for standard ERC-20 tokens
+- PrimerStargate proxy for standard ERC-20 tokens
 - Token approval tool
 - API contract fetching
 - Payload archiving with timestamps

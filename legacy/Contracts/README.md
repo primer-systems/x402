@@ -1,7 +1,7 @@
-# MegalithStargate Contract
+# PrimerStargate Contract
 1.0.0
 
-This directory contains the MegalithStargate smart contract
+This directory contains the PrimerStargate smart contract
 
 ## Contract Address
 
@@ -14,8 +14,6 @@ This directory contains the MegalithStargate smart contract
 
 | Network | Chain ID | Explorer |
 |---------|----------|----------|
-| BNB Chain Mainnet | 56 | https://bscscan.com |
-| BNB Chain Testnet | 97 | https://testnet.bscscan.com |
 | Base Mainnet | 8453 | https://basescan.org |
 | Base Sepolia | 84532 | https://sepolia.basescan.org |
 
@@ -62,6 +60,6 @@ This directory contains the MegalithStargate smart contract
 
 ## Support
 
-- Documentation: https://github.com/MegalithLabs/x402
+- Documentation: https://github.com/PrimerSystems/x402
 - Protocol: https://x402.org
-- Email: support@megalithlabs.ai
+- Email: support@primersystems.ai

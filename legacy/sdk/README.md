@@ -1,23 +1,23 @@
-# @megalithlabs/x402
+# @primersystems/x402
 
 JavaScript SDK for x402 payments. Pay for APIs and charge for APIs with stablecoins.
 
 **x402** is an open protocol for internet-native payments using HTTP 402 status codes.
 
-Learn more: [x402.org](https://x402.org) | [Megalith Labs](https://megalithlabs.ai)
+Learn more: [x402.org](https://x402.org) | [Primer Systems](https://primersystems.ai)
 
 ---
 
 ## Installation
 
 ```bash
-npm install @megalithlabs/x402
+npm install @primersystems/x402
 ```
 
 **For viem WalletClient support** (hardware wallets, WalletConnect, etc.):
 
 ```bash
-npm install @megalithlabs/x402 viem
+npm install @primersystems/x402 viem
 ```
 
 > **Note:** viem is an optional peer dependency. Only install it if you need WalletClient support for hardware wallets, WalletConnect, or other advanced wallet integrations. The simple approach using private keys works with just ethers (included by default).
@@ -31,10 +31,10 @@ npm install @megalithlabs/x402 viem
 **Simple approach (private key):**
 
 ```javascript
-const { createSigner, x402Fetch } = require('@megalithlabs/x402');
+const { createSigner, x402Fetch } = require('@primersystems/x402');
 
 // Create signer with your wallet
-const signer = await createSigner('bsc', process.env.PRIVATE_KEY);
+const signer = await createSigner('base', process.env.PRIVATE_KEY);
 
 // Wrap fetch to auto-handle 402 responses
 const fetchWithPay = x402Fetch(fetch, signer, { maxAmount: '0.50' });
@@ -49,15 +49,15 @@ const data = await response.json();
 > **Requires viem:** Run `npm install viem` first.
 
 ```javascript
-const { createSigner, x402Fetch } = require('@megalithlabs/x402');
+const { createSigner, x402Fetch } = require('@primersystems/x402');
 const { createWalletClient, http } = require('viem');
-const { bsc } = require('viem/chains');
+const { base } = require('viem/chains');
 const { privateKeyToAccount } = require('viem/accounts');
 
 // Create viem wallet client (supports hardware wallets, WalletConnect, etc.)
 const walletClient = createWalletClient({
   account: privateKeyToAccount(process.env.PRIVATE_KEY),
-  chain: bsc,
+  chain: base,
   transport: http()
 });
 
@@ -73,19 +73,19 @@ const response = await fetchWithPay('https://api.example.com/premium-data');
 
 ```javascript
 const express = require('express');
-const { x402Express } = require('@megalithlabs/x402');
+const { x402Express } = require('@primersystems/x402');
 
 const app = express();
 
-// USDC on bsc
-const USDT = '0x55d398326f99059fF775485246999027B3197955';
+// USDC on Base
+const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
 // Add payment requirement to routes
 app.use(x402Express('0xYourWalletAddress', {
   '/api/premium': {
-    amount: '0.01',      // 0.01 USDT (human-readable)
-    asset: USDT,         // Token address
-    network: 'bsc'      // Network
+    amount: '0.01',      // 0.01 USDC (human-readable)
+    asset: USDC,         // Token address
+    network: 'base'      // Network
   }
 }));
 
@@ -107,12 +107,12 @@ Create a signer for x402 payments. Supports two approaches:
 **Simple approach (private key):**
 
 ```javascript
-const signer = await createSigner('bsc', '0xabc123...');
+const signer = await createSigner('base', '0xabc123...');
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `network` | string |`'bsc'`, `'bsc-testnet'`, `'base'`, `'base-sepolia'`  |
+| `network` | string |`'base'`, `'base-sepolia'`  |
 | `privateKey` | string | Wallet private key (hex string) |
 
 **Advanced approach (viem wallet client):**
@@ -121,27 +121,27 @@ const signer = await createSigner('bsc', '0xabc123...');
 
 ```javascript
 const { createWalletClient, http } = require('viem');
-const { bsc } = require('viem/chains');
+const { base } = require('viem/chains');
 const { privateKeyToAccount } = require('viem/accounts');
 
 // With private key
 const walletClient = createWalletClient({
   account: privateKeyToAccount('0xabc123...'),
-  chain: bsc,
+  chain: base,
   transport: http()
 });
 
 // With hardware wallet (Ledger)
 const walletClient = createWalletClient({
   account: await ledger.getAccount(),
-  chain: bsc,
+  chain: base,
   transport: http()
 });
 
 // With WalletConnect
 const walletClient = createWalletClient({
   account: walletConnectAccount,
-  chain: bsc,
+  chain: base,
   transport: http()
 });
 
@@ -173,7 +173,7 @@ const response = await fetchWithPay('https://api.example.com/data');
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `maxAmount` | string | **Yes** | Maximum payment per request (e.g., `'0.50'`) |
-| `facilitator` | string | No | Custom facilitator URL (default: Megalith) |
+| `facilitator` | string | No | Custom facilitator URL (default: Primer) |
 
 ---
 
@@ -196,11 +196,11 @@ Same options as `x402Fetch`.
 Express middleware to require payment for routes.
 
 ```javascript
-const USDC = '0x55d398326f99059fF775485246999027B3197955';
+const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
 app.use(x402Express('0xYourAddress', {
-  '/api/premium': { amount: '0.01', asset: USDT, network: 'bsc' },
-  '/api/expensive': { amount: '1.00', asset: USDT, network: 'bsc' }
+  '/api/premium': { amount: '0.01', asset: USDC, network: 'base' },
+  '/api/expensive': { amount: '1.00', asset: USDC, network: 'base' }
 }));
 ```
 
@@ -229,13 +229,13 @@ Hono middleware to require payment for routes.
 
 ```javascript
 const { Hono } = require('hono');
-const { x402Hono } = require('@megalithlabs/x402');
+const { x402Hono } = require('@primersystems/x402');
 
-const USDT = '0x55d398326f99059fF775485246999027B3197955';
+const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const app = new Hono();
 
 app.use('*', x402Hono('0xYourAddress', {
-  '/api/premium': { amount: '0.01', asset: USDT, network: 'bsc' }
+  '/api/premium': { amount: '0.01', asset: USDC, network: 'base' }
 }));
 ```
 
@@ -249,9 +249,9 @@ Wrap Next.js API route handlers with payment requirement.
 
 ```javascript
 // pages/api/premium.js
-const { x402Next } = require('@megalithlabs/x402');
+const { x402Next } = require('@primersystems/x402');
 
-const USDT = '0x55d398326f99059fF775485246999027B3197955';
+const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
 export default x402Next(
   async (req, res) => {
@@ -260,8 +260,8 @@ export default x402Next(
   {
     payTo: '0xYourAddress',
     amount: '0.01',
-    asset: USDT,
-    network: 'bsc'
+    asset: USDC,
+    network: 'base'
   }
 );
 ```
@@ -272,8 +272,6 @@ export default x402Next(
 
 | Network | Chain ID | Description |
 |---------|----------|-------------|
-| `bsc` | 56 | BNB Chain Mainnet |
-| `bsc-testnet` | 97 | BNB Chain Testnet |
 | `base` | 8453 | Base Mainnet |
 | `base-sepolia` | 84532 | Base Testnet |
 
@@ -302,10 +300,10 @@ export default x402Next(
 
 ## CLI Tools
 
-For manual testing and learning, standalone CLI tools are available in the [x402 repository](https://github.com/MegalithLabs/x402):
+For manual testing and learning, standalone CLI tools are available in the [x402 repository](https://github.com/PrimerSystems/x402):
 
 ```bash
-git clone https://github.com/MegalithLabs/x402.git
+git clone https://github.com/PrimerSystems/x402.git
 cd x402/tools
 
 # Create payment authorization (interactive)
@@ -344,10 +342,10 @@ DEBUG=x402:* node app.js 2> debug.log
 ```
 x402:payer Request to https://api.example.com/premium +0ms
 x402:payer Got 402 Payment Required +125ms
-x402:payer Payment requirements: { scheme: 'exact', network: 'bsc', ... } +2ms
+x402:payer Payment requirements: { scheme: 'exact', network: 'base', ... } +2ms
 x402:payer Creating payment... +0ms
 x402:payer Payment created, signature: 0x1a2b3c... +340ms
-x402:payer Verifying payment with facilitator: https://x402.megalithlabs.ai +0ms
+x402:payer Verifying payment with facilitator: https://x402.primersystems.ai +0ms
 x402:payer Payment verified successfully +89ms
 x402:payer Retrying request with X-PAYMENT header +0ms
 x402:payer Final response: 200 +201ms
@@ -362,10 +360,10 @@ x402:payer Final response: 200 +201ms
 
 ## Support
 
-- Website: https://megalithlabs.ai
+- Website: https://primersystems.ai
 - x402 Protocol: https://x402.org
-- Issues: https://github.com/MegalithLabs/x402/issues
-- Email: support@megalithlabs.ai
+- Issues: https://github.com/PrimerSystems/x402/issues
+- Email: support@primersystems.ai
 
 ---
 
