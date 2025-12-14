@@ -111,10 +111,8 @@ contract PrimerPrism is Ownable2Step, ReentrancyGuard, Pausable {
     // CONSTRUCTOR
     // ============================================
     
-    constructor() Ownable(0x90292B16888f20C83eC40aEBA5Ef47F96E8B80Ea) {
-        address initialOwner = 0x90292B16888f20C83eC40aEBA5Ef47F96E8B80Ea;
-        
-        facilitators[initialOwner] = true; // Initial owner is automatically a facilitator
+    constructor() Ownable(msg.sender) {
+        facilitators[msg.sender] = true; // Deployer is automatically owner + facilitator
         feePercentage = 0; // Start with no fees
         
         // Cache domain separator for gas optimization
