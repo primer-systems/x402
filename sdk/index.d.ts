@@ -80,7 +80,7 @@ export interface PayerOptions {
  *
  * @example
  * const fetchWithPay = x402Fetch(fetch, signer, { maxAmount: '0.50' });
- * const response = await fetchWithPay('https://api.example.com/data');
+ * const response = await fetchWithPay('https://example.com/api/paywall');
  */
 export function x402Fetch(
   fetch: typeof globalThis.fetch,
@@ -93,7 +93,7 @@ export function x402Fetch(
  *
  * @example
  * const axiosWithPay = x402Axios(axios.create(), signer, { maxAmount: '0.50' });
- * const response = await axiosWithPay.get('https://api.example.com/data');
+ * const response = await axiosWithPay.get('https://example.com/api/paywall');
  */
 export function x402Axios<T>(
   axiosInstance: T,

@@ -2,7 +2,7 @@
 // Demonstrates using x402Fetch to pay for an API
 //
 // Usage:
-//   PRIVATE_KEY=0x... NETWORK=base MAX_AMOUNT=0.10 API_URL=https://api.example.com node basic-payment.js
+//   PRIVATE_KEY=0x... NETWORK=base MAX_AMOUNT=0.10 API_URL=https://example.com/api/paywall node basic-payment.js
 //
 // Or with dotenv (install separately: npm install dotenv):
 //   Create .env file, then: node -r dotenv/config basic-payment.js
