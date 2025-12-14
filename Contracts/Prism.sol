@@ -111,8 +111,8 @@ contract PrimerPrism is Ownable2Step, ReentrancyGuard, Pausable {
     // CONSTRUCTOR
     // ============================================
     
-    constructor() Ownable(0x75fe3F4B7467F8B79C5Ff0CA23E6D6b1d2898c44) {
-        address initialOwner = 0x75fe3F4B7467F8B79C5Ff0CA23E6D6b1d2898c44;
+    constructor() Ownable(0x90292B16888f20C83eC40aEBA5Ef47F96E8B80Ea) {
+        address initialOwner = 0x90292B16888f20C83eC40aEBA5Ef47F96E8B80Ea;
         
         facilitators[initialOwner] = true; // Initial owner is automatically a facilitator
         feePercentage = 0; // Start with no fees
@@ -408,3 +408,4 @@ contract PrimerPrism is Ownable2Step, ReentrancyGuard, Pausable {
         return (pendingFeePercentage, feeChangeTimestamp);
     }
 }
+
