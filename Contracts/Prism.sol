@@ -119,7 +119,7 @@ contract PrimerPrism is Ownable2Step, ReentrancyGuard, Pausable {
         CACHED_CHAIN_ID = block.chainid;
         CACHED_DOMAIN_SEPARATOR = _buildDomainSeparator();
         
-        emit FacilitatorAdded(initialOwner);
+        emit FacilitatorAdded(msg.sender);
     }
     
     // ============================================
