@@ -1,12 +1,13 @@
 # Primer x402
 
-[![Tests](https://github.com/Primer-Systems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/Primer-Systems/x402-private/actions/workflows/test.yml)
+[![Tests](https://github.com/PrimerSystems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/PrimerSystems/x402/actions/workflows/test.yml)
 
-Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 payments on Base.
+Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 payments.
 
 ## Components
 
-- **sdk/** - JavaScript SDK for payers and payees
+- **sdk-typescript/** - JavaScript/TypeScript SDK for payers and payees
+- **sdk-python/** - Python SDK for payers and payees
 - **tools/** - CLI tools for testing and token approval
 - **Contracts/** - *Prism* smart contract for ERC-20 settlements
 
@@ -17,7 +18,8 @@ Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 pay
 ```javascript
 const { createSigner, x402Fetch } = require('@primersystems/x402');
 
-const signer = await createSigner('base', process.env.PRIVATE_KEY);
+// Use CAIP-2 network format (eip155:chainId)
+const signer = await createSigner('eip155:8453', process.env.PRIVATE_KEY);
 const fetch402 = x402Fetch(fetch, signer, { maxAmount: '1.00' });
 
 const response = await fetch402('https://example.com/api/paywall');
@@ -32,17 +34,23 @@ app.use(x402Express('0xYourAddress', {
   '/api/paywall': {
     amount: '0.01',
     asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC on Base
-    network: 'base'
+    network: 'eip155:8453'  // CAIP-2 format
   }
 }));
 ```
 
 ## Supported Networks
 
-| Network | Chain ID |
-|---------|----------|
-| Base | 8453 |
-| Base Sepolia | 84532 |
+Networks use [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) identifiers.
+
+| Network (CAIP-2) | Chain ID | Name | Default Facilitator |
+|------------------|----------|------|---------------------|
+| eip155:8453 | 8453 | Base | ✓ Primer |
+| eip155:84532 | 84532 | Base Sepolia | ✓ Primer |
+| eip155:1 | 1 | Ethereum | Custom required |
+| eip155:42161 | 42161 | Arbitrum | Custom required |
+| eip155:10 | 10 | Optimism | Custom required |
+| eip155:137 | 137 | Polygon | Custom required |
 
 ## Token Types
 
@@ -51,11 +59,15 @@ app.use(x402Express('0xYourAddress', {
 
 ## Protocol
 
-Uses x402 v1 with the `exact` scheme. Payments are authorized via EIP-712 signatures and settled by a facilitator service.
+Uses **x402 v2** with the `exact` scheme. Payments are authorized via EIP-712 signatures and settled by a facilitator service.
 
-**Facilitator:** `https://x402.primer.systems`
+Key v2 features:
+- `x402Version: 2` in all payloads
+- CAIP-2 network identifiers (e.g., `eip155:8453` instead of `base`)
+- Multi-chain support
+
+**Facilitator:** `https://x402.primer.systems` (Base networks only)
 
 ## License
 
 MIT - Primer Systems
-

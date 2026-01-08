@@ -1,7 +1,8 @@
 // Primer x402 Signer & Payload Creator
-// Version 1.1.0
+// Version 2.0.0
+// x402 v2 with CAIP-2 network format
 // Supports both EIP-3009 and standard ERC-20 tokens
-// Supports Base (base, base-sepolia)
+// Supports Base (eip155:8453, eip155:84532)
 // https://primer.systems
 
 console.log("=== Primer x402 Signer & Payload Creator ===\n");
@@ -57,16 +58,32 @@ async function fetchPrismContract(network) {
   const AMOUNT = process.env.AMOUNT;
   let PRISM_CONTRACT = process.env.PRISM_CONTRACT;
   
-  // Network-specific configuration - text names, not number IDs
+  // Network-specific configuration - supports both CAIP-2 and legacy names
   const NETWORK_CONFIG = {
+    // CAIP-2 format (recommended)
+    'eip155:8453': {
+      name: 'Base Mainnet',
+      chainId: 8453,
+      caipId: 'eip155:8453',
+      rpcUrl: process.env.RPC_BASE || 'https://mainnet.base.org/'
+    },
+    'eip155:84532': {
+      name: 'Base Sepolia',
+      chainId: 84532,
+      caipId: 'eip155:84532',
+      rpcUrl: process.env.RPC_BASE_SEPOLIA || 'https://sepolia.base.org/'
+    },
+    // Legacy names (still supported for backward compatibility)
     'base': {
       name: 'Base Mainnet',
       chainId: 8453,
+      caipId: 'eip155:8453',
       rpcUrl: process.env.RPC_BASE || 'https://mainnet.base.org/'
     },
     'base-sepolia': {
       name: 'Base Sepolia',
       chainId: 84532,
+      caipId: 'eip155:84532',
       rpcUrl: process.env.RPC_BASE_SEPOLIA || 'https://sepolia.base.org/'
     }
   };
@@ -78,12 +95,13 @@ async function fetchPrismContract(network) {
   // Validate network
   if (!NETWORK_CONFIG[NETWORK]) {
     console.error("❌ Invalid NETWORK in signer.env");
-    console.error("Supported networks: base, base-sepolia");
+    console.error("Supported networks: eip155:8453, eip155:84532 (or legacy: base, base-sepolia)");
     console.error("You provided:", NETWORK);
     process.exit(1);
   }
 
   const networkConfig = NETWORK_CONFIG[NETWORK];
+  const caipNetwork = networkConfig.caipId;  // Always use CAIP-2 format in payloads
 
   if (!PAYER_KEY || !RECIPIENT || !TOKEN || !AMOUNT) {
     console.error("❌ Missing configuration in signer.env");
@@ -283,11 +301,11 @@ async function fetchPrismContract(network) {
     console.log("✅ Signature created successfully");
     console.log("→ Using scheme: exact (EIP-3009 native authorization)");
 
-    // x402-compliant payload format
+    // x402 v2 compliant payload format
     const paymentPayload = {
-      x402Version: 1,
+      x402Version: 2,
       scheme: "exact",
-      network: NETWORK,
+      network: caipNetwork,  // CAIP-2 format
       payload: {
         signature: sig,
         authorization: {
@@ -303,7 +321,7 @@ async function fetchPrismContract(network) {
 
     const paymentRequirements = {
       scheme: "exact",
-      network: NETWORK,
+      network: caipNetwork,  // CAIP-2 format
       maxAmountRequired: message.value.toString(),
       resource: "/api/settlement",
       description: `Payment of ${ethers.formatUnits(value, tokenDecimals)} ${tokenSymbol || 'tokens'}`,
@@ -320,7 +338,7 @@ async function fetchPrismContract(network) {
     };
 
     payload = {
-      x402Version: 1,
+      x402Version: 2,
       paymentPayload,
       paymentRequirements
     };
@@ -405,11 +423,11 @@ async function fetchPrismContract(network) {
     console.log("✅ Signature created successfully");
     console.log("→ Using scheme: exact (Prism proxy for standard ERC-20)");
 
-    // x402-compliant payload format
+    // x402 v2 compliant payload format
     const paymentPayload = {
-      x402Version: 1,
+      x402Version: 2,
       scheme: "exact",
-      network: NETWORK,
+      network: caipNetwork,  // CAIP-2 format
       payload: {
         signature: sig,
         authorization: {
@@ -425,7 +443,7 @@ async function fetchPrismContract(network) {
 
     const paymentRequirements = {
       scheme: "exact",
-      network: NETWORK,
+      network: caipNetwork,  // CAIP-2 format
       maxAmountRequired: message.value.toString(),
       resource: "/api/settlement",
       description: `Payment of ${ethers.formatUnits(value, tokenDecimals)} ${tokenSymbol || 'tokens'}`,
@@ -441,7 +459,7 @@ async function fetchPrismContract(network) {
     };
 
     payload = {
-      x402Version: 1,
+      x402Version: 2,
       paymentPayload,
       paymentRequirements
     };
@@ -498,13 +516,13 @@ async function fetchPrismContract(network) {
   
   console.log("\n=============\n");
 
-  console.log("✅ x402-compliant payment authorization created successfully!");
-  console.log("Network:", networkConfig.name, `(${NETWORK}, Chain ID: ${networkConfig.chainId})`);
+  console.log("✅ x402 v2 payment authorization created successfully!");
+  console.log("Network:", networkConfig.name, `(${caipNetwork}, Chain ID: ${networkConfig.chainId})`);
   console.log("Type:", isEIP3009 ? "EIP-3009 (direct)" : "ERC-20 (via PrimerPrism)");
   console.log("From:", wallet.address);
   console.log("To:", RECIPIENT);
   console.log("Amount:", ethers.formatUnits(value, tokenDecimals), tokenSymbol || "tokens");
-  console.log("Protocol: x402 v1 (exact scheme)");
+  console.log("Protocol: x402 v2 (exact scheme, CAIP-2 network format)");
   console.log("\nThe facilitator will pay the gas fees when settling.");
 
 })().catch(error => {

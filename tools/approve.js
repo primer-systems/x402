@@ -1,9 +1,9 @@
 // Primer x402 Token Approval Tool
-// Version 1.1.0
+// Version 1.2.0
 // Approves ERC-20 tokens for use with PrimerPrism contract
 // Required for standard ERC-20 tokens (not needed for EIP-3009 tokens)
-// Part of the x402 payment protocol implementation
-// Supports Base (8453, 84532)
+// Part of the x402 v2 payment protocol implementation
+// Supports Base (eip155:8453, eip155:84532)
 // https://primer.systems | https://x402.org
 
 const { ethers } = require('ethers');
@@ -41,11 +41,16 @@ const RPC_URLS = {
   '84532': process.env.RPC_BASE_SEPOLIA || 'https://sepolia.base.org',
 };
 
-// Network name to chain ID mapping
+// Network name to chain ID mapping (supports CAIP-2 and legacy names)
 const NETWORK_NAMES = {
+  // CAIP-2 format (recommended)
+  'eip155:8453': '8453',
+  'eip155:84532': '84532',
+  // Legacy names (still supported)
   'base': '8453',
   'base-mainnet': '8453',
   'base-sepolia': '84532',
+  // Chain IDs directly
   '8453': '8453',
   '84532': '84532'
 };
@@ -138,8 +143,8 @@ async function main() {
   
   if (!network || !RPC_URLS[network]) {
     console.error(`${colors.red}✗${colors.reset} Invalid NETWORK in approve.env`);
-    console.error(`${colors.yellow}→${colors.reset} Use: 8453, 84532`);
-    console.error(`${colors.yellow}→${colors.reset} Or: base, base-sepolia`);
+    console.error(`${colors.yellow}→${colors.reset} Use CAIP-2 format: eip155:8453, eip155:84532`);
+    console.error(`${colors.yellow}→${colors.reset} Or legacy names: base, base-sepolia`);
     process.exit(1);
   }
 

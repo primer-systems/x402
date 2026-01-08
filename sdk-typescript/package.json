@@ -1,0 +1,84 @@
+{
+  "name": "@primersystems/x402",
+  "version": "0.4.0",
+  "description": "JavaScript SDK for x402 payments - pay and charge for APIs with stablecoins",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "example": "node examples/basic-payment.js"
+  },
+  "keywords": [
+    "x402",
+    "payments",
+    "crypto",
+    "usdc",
+    "stablecoin",
+    "ethereum",
+    "base",
+    "eip-3009",
+    "web3",
+    "ai-payments",
+    "micropayments",
+    "http-402",
+    "ai-agents"
+  ],
+  "author": "Primer Systems <support@primer.systems>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PrimerSystems/x402.git",
+    "directory": "sdk-typescript"
+  },
+  "homepage": "https://x402.org",
+  "bugs": {
+    "url": "https://github.com/PrimerSystems/x402/issues"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "utils.js",
+    "signer.js",
+    "payer.js",
+    "payee.js",
+    "testing.js",
+    "testing/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./testing": "./testing.js",
+    "./utils": "./utils.js",
+    "./signer": "./signer.js",
+    "./payer": "./payer.js",
+    "./payee": "./payee.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "debug": "^4.3.4",
+    "ethers": "^6.13.0"
+  },
+  "peerDependencies": {
+    "viem": "^2.0.0",
+    "axios": ">=1.0.0",
+    "express": ">=4.0.0",
+    "hono": ">=3.0.0",
+    "next": ">=13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "viem": { "optional": true },
+    "axios": { "optional": true },
+    "express": { "optional": true },
+    "hono": { "optional": true },
+    "next": { "optional": true }
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
