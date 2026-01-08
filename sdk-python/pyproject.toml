@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "x402-python"
+name = "primer-x402"
 version = "0.4.0"
 description = "Python SDK for x402 payments - pay and charge for APIs with stablecoins"
 readme = "README.md"
