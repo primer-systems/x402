@@ -6,7 +6,7 @@ Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 pay
 
 ## Components
 
-- **sdk-typescript/** - JavaScript/TypeScript SDK for payers and payees
+- **sdk-typescript/** - TypeScript SDK for payers and payees
 - **sdk-python/** - Python SDK for payers and payees
 - **tools/** - CLI tools for testing and token approval
 - **Contracts/** - *Prism* smart contract for ERC-20 settlements

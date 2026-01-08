@@ -1,7 +1,7 @@
 {
   "name": "@primersystems/x402",
   "version": "0.4.1",
-  "description": "JavaScript SDK for x402 payments - pay and charge for APIs with stablecoins",
+  "description": "TypeScript SDK for x402 payments - pay and charge for APIs with stablecoins",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {

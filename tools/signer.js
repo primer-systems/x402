@@ -498,7 +498,7 @@ async function fetchPrismContract(network) {
   console.log("\n=== USAGE ===");
   console.log(`Network: ${networkConfig.name} (${NETWORK}, Chain ID: ${networkConfig.chainId})`);
   
-  console.log("\n📤 Verify & Settle Payment (Coinbase x402 spec compliant)");
+  console.log("\n📤 Verify & Settle Payment (x402 protocol)");
   console.log(`  curl.exe -X POST ${FACILITATOR_API}/verify --% -H "Content-Type: application/json" -d @payload.json`);
   console.log(`  curl.exe -X POST ${FACILITATOR_API}/settle --% -H "Content-Type: application/json" -d @payload.json`);
 
@@ -511,7 +511,7 @@ async function fetchPrismContract(network) {
   console.log(`  curl.exe -X POST http://localhost:3000/verify --% -H "Content-Type: application/json" -d @payload.json`);
 
   console.log("\n📁 Generated files:");
-  console.log("  - payload.json           (Coinbase x402 spec compliant)");
+  console.log("  - payload.json           (x402 protocol)");
   console.log("  - payloads/payload-*.json (Timestamped backup)");
   
   console.log("\n=============\n");

@@ -4,7 +4,7 @@
 [![Tests](https://github.com/Primer-Systems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/Primer-Systems/x402/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**JavaScript SDK for x402 HTTP payments by [Primer](https://primer.systems).**
+**TypeScript SDK for x402 HTTP payments by [Primer](https://primer.systems).**
 
 Easily add pay-per-request monetization to your JavaScript/TypeScript APIs using the [x402 protocol](https://x402.org). Accept stablecoin payments (USDC, EURC) or any ERC-20 token with gasless transactions—payers never pay gas fees.
 

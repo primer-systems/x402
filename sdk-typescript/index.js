@@ -1,5 +1,5 @@
 // Primer x402
-// JavaScript SDK for x402 payments
+// TypeScript SDK for x402 payments
 // https://primer.systems | https://x402.org
 
 // Signer

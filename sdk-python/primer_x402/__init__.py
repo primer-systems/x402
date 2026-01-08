@@ -1,5 +1,5 @@
-# Primer x402 Python SDK
-# Pay and charge for APIs with stablecoins
+# Primer x402
+# Python SDK for x402 payments
 # https://primer.systems | https://x402.org
 
 from .signer import create_signer, Signer
@@ -25,7 +25,7 @@ from .utils import (
     parse_payment_header
 )
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 __all__ = [
     # Signer
     "create_signer",
