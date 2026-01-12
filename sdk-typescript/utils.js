@@ -424,14 +424,14 @@ function base64Encode(str) {
 // ============================================
 
 /**
- * Parse and validate an X-PAYMENT header from a client
- * Supports x402 v2 format
+ * Parse and validate a PAYMENT-SIGNATURE header from a client
+ * x402 v2 format
  * @param {string} paymentHeader - Base64-encoded payment header
  * @returns {{ payment: object, error: null } | { payment: null, error: string }}
  */
 function parsePaymentHeader(paymentHeader) {
   if (!paymentHeader || typeof paymentHeader !== 'string') {
-    return { payment: null, error: 'Missing X-PAYMENT header' };
+    return { payment: null, error: 'Missing PAYMENT-SIGNATURE header' };
   }
 
   // Decode base64
@@ -439,7 +439,7 @@ function parsePaymentHeader(paymentHeader) {
   try {
     decoded = base64Decode(paymentHeader);
   } catch (e) {
-    return { payment: null, error: 'Invalid X-PAYMENT header: not valid base64' };
+    return { payment: null, error: 'Invalid PAYMENT-SIGNATURE header: not valid base64' };
   }
 
   // Parse JSON
@@ -447,7 +447,7 @@ function parsePaymentHeader(paymentHeader) {
   try {
     payment = JSON.parse(decoded);
   } catch (e) {
-    return { payment: null, error: 'Invalid X-PAYMENT header: not valid JSON' };
+    return { payment: null, error: 'Invalid PAYMENT-SIGNATURE header: not valid JSON' };
   }
 
   // Validate required fields

@@ -392,10 +392,10 @@ def x402_flask(
             logger.debug(f"Flask: Payment required for {request.path}")
             config = matched_route.config
 
-            # Check for payment header
-            payment_header = request.headers.get("X-PAYMENT")
+            # Check for payment header (x402 v2 uses PAYMENT-SIGNATURE)
+            payment_header = request.headers.get("PAYMENT-SIGNATURE")
             if not payment_header:
-                logger.debug("Flask: No X-PAYMENT header, returning 402")
+                logger.debug("Flask: No PAYMENT-SIGNATURE header, returning 402")
                 try:
                     x402_response = build_payment_requirements(pay_to, config, request.path)
                     encoded = base64_encode(json.dumps(x402_response))
@@ -427,9 +427,9 @@ def x402_flask(
                 # Call original handler
                 response = f(*args, **kwargs)
 
-                # Add payment response header if it's a Response object
+                # Add payment response header if it's a Response object (x402 v2 uses PAYMENT-RESPONSE)
                 if isinstance(response, Response):
-                    response.headers["X-PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
+                    response.headers["PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
                     return response
 
                 # If it's a tuple or other, try to handle it
@@ -437,7 +437,7 @@ def x402_flask(
                     resp = Response(response[0]) if len(response) > 0 else Response()
                     if len(response) > 1:
                         resp.status_code = response[1]
-                    resp.headers["X-PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
+                    resp.headers["PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
                     return resp
 
                 return response
@@ -527,10 +527,10 @@ def x402_fastapi(
             logger.debug(f"FastAPI: Payment required for {request.url.path}")
             config = matched_route.config
 
-            # Check for payment header
-            payment_header = request.headers.get("x-payment")
+            # Check for payment header (x402 v2 uses PAYMENT-SIGNATURE)
+            payment_header = request.headers.get("payment-signature")
             if not payment_header:
-                logger.debug("FastAPI: No X-PAYMENT header, returning 402")
+                logger.debug("FastAPI: No PAYMENT-SIGNATURE header, returning 402")
                 try:
                     x402_response = build_payment_requirements(pay_to, config, request.url.path)
                     encoded = base64_encode(json.dumps(x402_response))
@@ -562,8 +562,8 @@ def x402_fastapi(
                 # Call route handler
                 response = await call_next(request)
 
-                # Add payment response header
-                response.headers["X-PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
+                # Add payment response header (x402 v2 uses PAYMENT-RESPONSE)
+                response.headers["PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
                 return response
 
             except Exception as e:
@@ -655,9 +655,10 @@ def x402_protect(
             resource = request.path
             logger.debug(f"x402_protect: Payment required for {resource}")
 
-            payment_header = request.headers.get("X-PAYMENT")
+            # x402 v2 uses PAYMENT-SIGNATURE header
+            payment_header = request.headers.get("PAYMENT-SIGNATURE")
             if not payment_header:
-                logger.debug("x402_protect: No X-PAYMENT header, returning 402")
+                logger.debug("x402_protect: No PAYMENT-SIGNATURE header, returning 402")
                 try:
                     x402_response = build_payment_requirements(pay_to, config, resource)
                     encoded = base64_encode(json.dumps(x402_response))
@@ -679,8 +680,9 @@ def x402_protect(
                 request.x402_settlement = settlement
                 response = func(*args, **kwargs)
 
+                # x402 v2 uses PAYMENT-RESPONSE header
                 if isinstance(response, Response):
-                    response.headers["X-PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
+                    response.headers["PAYMENT-RESPONSE"] = base64_encode(json.dumps(settlement))
                 return response
 
             except Exception as e:
@@ -720,7 +722,8 @@ def x402_protect(
             resource = request.url.path
             logger.debug(f"x402_protect: Payment required for {resource}")
 
-            payment_header = request.headers.get("x-payment")
+            # x402 v2 uses PAYMENT-SIGNATURE header
+            payment_header = request.headers.get("payment-signature")
             if not payment_header:
                 try:
                     x402_response = build_payment_requirements(pay_to, config, resource)

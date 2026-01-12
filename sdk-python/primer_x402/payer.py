@@ -647,12 +647,12 @@ class X402Session:
             verify_payment(payment, requirements, self.facilitator)
             logger.debug("Payment verified successfully")
 
-        # Retry with payment header
-        logger.debug("Retrying request with X-PAYMENT header")
+        # Retry with payment header (x402 v2 uses PAYMENT-SIGNATURE)
+        logger.debug("Retrying request with PAYMENT-SIGNATURE header")
         payment_header = base64_encode(json.dumps(payment))
 
         headers = kwargs.get("headers", {}).copy()
-        headers["X-PAYMENT"] = payment_header
+        headers["PAYMENT-SIGNATURE"] = payment_header
         kwargs["headers"] = headers
 
         final_response = self._session.request(method, url, **kwargs)
@@ -931,10 +931,10 @@ try:
             if self.should_verify:
                 await verify_payment_async(payment, requirements, self.facilitator)
 
-            # Retry with payment header
+            # Retry with payment header (x402 v2 uses PAYMENT-SIGNATURE)
             payment_header = base64_encode(json.dumps(payment))
             headers = dict(kwargs.get("headers", {}))
-            headers["X-PAYMENT"] = payment_header
+            headers["PAYMENT-SIGNATURE"] = payment_header
             kwargs["headers"] = headers
 
             return await self._client.request(method, url, **kwargs)

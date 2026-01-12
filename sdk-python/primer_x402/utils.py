@@ -425,8 +425,8 @@ class PaymentParseResult:
 
 def parse_payment_header(payment_header: Optional[str]) -> PaymentParseResult:
     """
-    Parse and validate an X-PAYMENT header from a client.
-    Supports x402 v2 format.
+    Parse and validate a PAYMENT-SIGNATURE header from a client.
+    x402 v2 format.
 
     Args:
         payment_header: Base64-encoded payment header
@@ -435,7 +435,7 @@ def parse_payment_header(payment_header: Optional[str]) -> PaymentParseResult:
         PaymentParseResult with payment dict or error message
     """
     if not payment_header or not isinstance(payment_header, str):
-        return PaymentParseResult(payment=None, error="Missing X-PAYMENT header")
+        return PaymentParseResult(payment=None, error="Missing PAYMENT-SIGNATURE header")
 
     # Decode base64
     try:
@@ -443,7 +443,7 @@ def parse_payment_header(payment_header: Optional[str]) -> PaymentParseResult:
     except Exception:
         return PaymentParseResult(
             payment=None,
-            error="Invalid X-PAYMENT header: not valid base64"
+            error="Invalid PAYMENT-SIGNATURE header: not valid base64"
         )
 
     # Parse JSON
@@ -452,7 +452,7 @@ def parse_payment_header(payment_header: Optional[str]) -> PaymentParseResult:
     except Exception:
         return PaymentParseResult(
             payment=None,
-            error="Invalid X-PAYMENT header: not valid JSON"
+            error="Invalid PAYMENT-SIGNATURE header: not valid JSON"
         )
 
     # Validate required fields

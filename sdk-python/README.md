@@ -193,6 +193,9 @@ logging.getLogger('x402').setLevel(logging.DEBUG)
 
 ## Changelog
 
+### v0.4.3
+- Cleaned up legacy v1 protocol remnants for pure v2 compliance
+
 ### v0.4.2
 - **Bug fix**: 402 Payment Required responses now include JSON body (`{}`) instead of empty body
 - Fixes Chrome content script injection blocking issue

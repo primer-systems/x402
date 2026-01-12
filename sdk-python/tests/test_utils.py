@@ -75,12 +75,12 @@ class TestParsePaymentHeader:
     def test_rejects_none_header(self):
         result = parse_payment_header(None)
         assert result.payment is None
-        assert result.error == "Missing X-PAYMENT header"
+        assert result.error == "Missing PAYMENT-SIGNATURE header"
 
     def test_rejects_empty_string(self):
         result = parse_payment_header("")
         assert result.payment is None
-        assert result.error == "Missing X-PAYMENT header"
+        assert result.error == "Missing PAYMENT-SIGNATURE header"
 
     def test_rejects_invalid_base64(self):
         result = parse_payment_header("not-valid-base64!!!")

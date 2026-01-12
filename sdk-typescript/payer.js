@@ -176,14 +176,14 @@ function x402Fetch(fetch, signer, options = {}) {
       debug('Payment verified successfully');
     }
 
-    // Retry with payment header
-    debug('Retrying request with X-PAYMENT header');
+    // Retry with payment header (x402 v2 uses PAYMENT-SIGNATURE)
+    debug('Retrying request with PAYMENT-SIGNATURE header');
     const paymentHeader = base64Encode(JSON.stringify(payment));
     const newInit = {
       ...init,
       headers: {
         ...init.headers,
-        'X-PAYMENT': paymentHeader
+        'PAYMENT-SIGNATURE': paymentHeader
       }
     };
 
@@ -262,11 +262,11 @@ function x402Axios(axiosInstance, signer, options = {}) {
         debug('Payment verified');
       }
 
-      // Retry with payment header
-      debug('Retrying request with X-PAYMENT header');
+      // Retry with payment header (x402 v2 uses PAYMENT-SIGNATURE)
+      debug('Retrying request with PAYMENT-SIGNATURE header');
       const paymentHeader = base64Encode(JSON.stringify(payment));
       const config = error.config;
-      config.headers['X-PAYMENT'] = paymentHeader;
+      config.headers['PAYMENT-SIGNATURE'] = paymentHeader;
 
       return axiosInstance.request(config);
     }

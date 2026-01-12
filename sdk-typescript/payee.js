@@ -181,10 +181,10 @@ function x402Express(payTo, routes, options = {}) {
     debug('Express: Payment required for %s', req.path);
     const config = matchedRoute.config;
 
-    // Check for payment header
-    const paymentHeader = req.headers['x-payment'];
+    // Check for payment header (x402 v2 uses PAYMENT-SIGNATURE)
+    const paymentHeader = req.headers['payment-signature'];
     if (!paymentHeader) {
-      debug('Express: No X-PAYMENT header, returning 402');
+      debug('Express: No PAYMENT-SIGNATURE header, returning 402');
       // Return 402 with payment requirements via PAYMENT-REQUIRED header (x402 spec)
       try {
         const x402Response = await buildPaymentRequirements(payTo, config, req.path);
@@ -209,8 +209,8 @@ function x402Express(payTo, routes, options = {}) {
       const result = await settlePayment(payment, payTo, config, facilitator);
       debug('Express: Settlement successful, txHash: %s', result.transactionHash || 'N/A');
 
-      // Add payment response header
-      res.setHeader('X-PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
+      // Add payment response header (x402 v2 uses PAYMENT-RESPONSE)
+      res.setHeader('PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
 
       // Continue to route handler
       next();
@@ -260,10 +260,10 @@ function x402Hono(payTo, routes, options = {}) {
     debug('Hono: Payment required for %s', c.req.path);
     const config = matchedRoute.config;
 
-    // Check for payment header
-    const paymentHeader = c.req.header('x-payment');
+    // Check for payment header (x402 v2 uses PAYMENT-SIGNATURE)
+    const paymentHeader = c.req.header('payment-signature');
     if (!paymentHeader) {
-      debug('Hono: No X-PAYMENT header, returning 402');
+      debug('Hono: No PAYMENT-SIGNATURE header, returning 402');
       try {
         const x402Response = await buildPaymentRequirements(payTo, config, c.req.path);
         const encoded = base64Encode(JSON.stringify(x402Response));
@@ -293,7 +293,8 @@ function x402Hono(payTo, routes, options = {}) {
       const result = await settlePayment(payment, payTo, config, facilitator);
       debug('Hono: Settlement successful');
 
-      c.header('X-PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
+      // x402 v2 uses PAYMENT-RESPONSE header
+      c.header('PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
 
       await next();
     } catch (error) {
@@ -389,10 +390,11 @@ async function handleAppRouter(req, handler, config, facilitator) {
   const url = new URL(req.url);
   debug('Next.js App Router: Payment required for %s', url.pathname);
 
-  const paymentHeader = req.headers.get('x-payment');
+  // x402 v2 uses PAYMENT-SIGNATURE header
+  const paymentHeader = req.headers.get('payment-signature');
 
   if (!paymentHeader) {
-    debug('Next.js App Router: No X-PAYMENT header, returning 402');
+    debug('Next.js App Router: No PAYMENT-SIGNATURE header, returning 402');
     try {
       const x402Response = await buildPaymentRequirements(config.payTo, config, url.pathname);
       const encoded = base64Encode(JSON.stringify(x402Response));
@@ -424,9 +426,9 @@ async function handleAppRouter(req, handler, config, facilitator) {
     // Call original handler and add payment response header
     const response = await handler(req);
 
-    // Clone response to add header
+    // Clone response to add header (x402 v2 uses PAYMENT-RESPONSE)
     const newHeaders = new Headers(response.headers);
-    newHeaders.set('X-PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
+    newHeaders.set('PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
 
     return new Response(response.body, {
       status: response.status,
@@ -459,10 +461,11 @@ async function handleAppRouter(req, handler, config, facilitator) {
 async function handlePagesRouter(req, res, handler, config, facilitator) {
   debug('Next.js Pages Router: Payment required for %s', req.url);
 
-  const paymentHeader = req.headers['x-payment'];
+  // x402 v2 uses PAYMENT-SIGNATURE header
+  const paymentHeader = req.headers['payment-signature'];
 
   if (!paymentHeader) {
-    debug('Next.js Pages Router: No X-PAYMENT header, returning 402');
+    debug('Next.js Pages Router: No PAYMENT-SIGNATURE header, returning 402');
     try {
       const x402Response = await buildPaymentRequirements(config.payTo, config, req.url);
       const encoded = base64Encode(JSON.stringify(x402Response));
@@ -485,7 +488,8 @@ async function handlePagesRouter(req, res, handler, config, facilitator) {
     const result = await settlePayment(payment, config.payTo, config, facilitator);
     debug('Next.js Pages Router: Settlement successful');
 
-    res.setHeader('X-PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
+    // x402 v2 uses PAYMENT-RESPONSE header
+    res.setHeader('PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
 
     return await handler(req, res);
   } catch (error) {
@@ -709,10 +713,10 @@ function x402Protect(payTo, amount, asset, network, options = {}) {
   return async function protectedHandler(req, res, next) {
     debug('x402Protect: Payment required for %s', req.path);
 
-    // Check for payment header
-    const paymentHeader = req.headers['x-payment'];
+    // Check for payment header (x402 v2 uses PAYMENT-SIGNATURE)
+    const paymentHeader = req.headers['payment-signature'];
     if (!paymentHeader) {
-      debug('x402Protect: No X-PAYMENT header, returning 402');
+      debug('x402Protect: No PAYMENT-SIGNATURE header, returning 402');
       try {
         const x402Response = await buildPaymentRequirements(payTo, config, req.path);
         const encoded = base64Encode(JSON.stringify(x402Response));
@@ -739,8 +743,8 @@ function x402Protect(payTo, amount, asset, network, options = {}) {
       // Store settlement result on request
       req.x402Settlement = result;
 
-      // Add payment response header
-      res.setHeader('X-PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
+      // Add payment response header (x402 v2 uses PAYMENT-RESPONSE)
+      res.setHeader('PAYMENT-RESPONSE', base64Encode(JSON.stringify(result)));
 
       // Continue to route handler
       next();

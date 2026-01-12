@@ -194,14 +194,14 @@ describe('x402Express', () => {
   });
 
   describe('payment header validation', () => {
-    test('rejects invalid X-PAYMENT header (bad base64)', async () => {
+    test('rejects invalid PAYMENT-SIGNATURE header (bad base64)', async () => {
       const middleware = x402Express(VALID_PAY_TO, {
         '/api/data': { amount: '0.01', asset: USDC_BASE, network: 'base' }
       });
 
       const req = createMockReq({
         path: '/api/data',
-        headers: { 'x-payment': 'not-valid-base64!!!' }
+        headers: { 'payment-signature': 'not-valid-base64!!!' }
       });
       const res = createMockRes();
       const next = jest.fn();
@@ -213,14 +213,14 @@ describe('x402Express', () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    test('rejects X-PAYMENT header with invalid JSON', async () => {
+    test('rejects PAYMENT-SIGNATURE header with invalid JSON', async () => {
       const middleware = x402Express(VALID_PAY_TO, {
         '/api/data': { amount: '0.01', asset: USDC_BASE, network: 'base' }
       });
 
       const req = createMockReq({
         path: '/api/data',
-        headers: { 'x-payment': base64Encode('not json') }
+        headers: { 'payment-signature': base64Encode('not json') }
       });
       const res = createMockRes();
       const next = jest.fn();
@@ -231,7 +231,7 @@ describe('x402Express', () => {
       expect(res.body.error).toContain('not valid JSON');
     });
 
-    test('rejects X-PAYMENT header missing x402Version', async () => {
+    test('rejects PAYMENT-SIGNATURE header missing x402Version', async () => {
       const middleware = x402Express(VALID_PAY_TO, {
         '/api/data': { amount: '0.01', asset: USDC_BASE, network: 'base' }
       });
@@ -239,7 +239,7 @@ describe('x402Express', () => {
       const payment = { scheme: 'exact', network: 'base', payload: {} };
       const req = createMockReq({
         path: '/api/data',
-        headers: { 'x-payment': base64Encode(JSON.stringify(payment)) }
+        headers: { 'payment-signature': base64Encode(JSON.stringify(payment)) }
       });
       const res = createMockRes();
       const next = jest.fn();
@@ -345,7 +345,7 @@ describe('x402Protect', () => {
   });
 
   describe('middleware behavior', () => {
-    test('returns 402 when no X-PAYMENT header (skipped - requires RPC)', async () => {
+    test('returns 402 when no PAYMENT-SIGNATURE header (skipped - requires RPC)', async () => {
       // This test requires mocking ethers RPC calls for token metadata
       // Skip for now, covered by integration tests
     });
@@ -355,7 +355,7 @@ describe('x402Protect', () => {
 
       const req = createMockReq({
         path: '/api/premium',
-        headers: { 'x-payment': 'invalid-base64!!!' }
+        headers: { 'payment-signature': 'invalid-base64!!!' }
       });
       const res = createMockRes();
       const next = jest.fn();
@@ -372,7 +372,7 @@ describe('x402Protect', () => {
       const payment = { scheme: 'exact', network: 'base', payload: {} };
       const req = createMockReq({
         path: '/api/premium',
-        headers: { 'x-payment': base64Encode(JSON.stringify(payment)) }
+        headers: { 'payment-signature': base64Encode(JSON.stringify(payment)) }
       });
       const res = createMockRes();
       const next = jest.fn();

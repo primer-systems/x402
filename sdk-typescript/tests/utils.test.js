@@ -75,25 +75,25 @@ describe('parsePaymentHeader', () => {
     test('rejects null header', () => {
       const result = parsePaymentHeader(null);
       expect(result.payment).toBeNull();
-      expect(result.error).toBe('Missing X-PAYMENT header');
+      expect(result.error).toBe('Missing PAYMENT-SIGNATURE header');
     });
 
     test('rejects undefined header', () => {
       const result = parsePaymentHeader(undefined);
       expect(result.payment).toBeNull();
-      expect(result.error).toBe('Missing X-PAYMENT header');
+      expect(result.error).toBe('Missing PAYMENT-SIGNATURE header');
     });
 
     test('rejects empty string', () => {
       const result = parsePaymentHeader('');
       expect(result.payment).toBeNull();
-      expect(result.error).toBe('Missing X-PAYMENT header');
+      expect(result.error).toBe('Missing PAYMENT-SIGNATURE header');
     });
 
     test('rejects non-string input', () => {
       const result = parsePaymentHeader(12345);
       expect(result.payment).toBeNull();
-      expect(result.error).toBe('Missing X-PAYMENT header');
+      expect(result.error).toBe('Missing PAYMENT-SIGNATURE header');
     });
 
     test('rejects invalid base64 / garbage input', () => {
