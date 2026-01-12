@@ -191,6 +191,23 @@ import logging
 logging.getLogger('x402').setLevel(logging.DEBUG)
 ```
 
+## Changelog
+
+### v0.4.2
+- **Bug fix**: 402 Payment Required responses now include JSON body (`{}`) instead of empty body
+- Fixes Chrome content script injection blocking issue
+- Aligns with Coinbase x402 specification
+
+### v0.4.1
+- Updated package name to `primer-x402`
+- Renamed module to `primer_x402`
+
+### v0.4.0
+- **x402 v2 protocol**: Full upgrade to x402 v2 specification
+- **CAIP-2 network identifiers**: All networks now use CAIP-2 format (e.g., `'eip155:8453'`)
+- **Multi-chain support**: Base, Ethereum, Arbitrum, Optimism, and Polygon
+- **Testing utilities**: Mock facilitator and test helpers
+
 ## Links
 
 - [x402 Protocol Specification](https://x402.org)

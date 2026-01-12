@@ -348,6 +348,11 @@ fixtures.samplePaymentPayload   // Example payment payload structure
 
 ## Changelog
 
+### v0.4.2
+- **Bug fix**: 402 Payment Required responses now include JSON body (`{}`) instead of empty body
+- Fixes Chrome content script injection blocking issue
+- Aligns with Coinbase x402 specification
+
 ### v0.4.0
 - **x402 v2 protocol**: Full upgrade to x402 v2 specification with `x402Version: 2`
 - **CAIP-2 network identifiers**: All networks now use CAIP-2 format (e.g., `'eip155:8453'` instead of `'base'`)

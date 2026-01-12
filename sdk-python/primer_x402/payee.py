@@ -400,8 +400,10 @@ def x402_flask(
                     x402_response = build_payment_requirements(pay_to, config, request.path)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        response=json.dumps({}),
                         status=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        content_type="application/json"
                     )
                 except Exception as e:
                     return jsonify({"error": str(e)}), 500
@@ -447,8 +449,10 @@ def x402_flask(
                     x402_response["error"] = str(e)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        response=json.dumps({}),
                         status=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        content_type="application/json"
                     )
                 except Exception as req_error:
                     return jsonify({"error": str(req_error)}), 500
@@ -531,8 +535,10 @@ def x402_fastapi(
                     x402_response = build_payment_requirements(pay_to, config, request.url.path)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        content=json.dumps({}),
                         status_code=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        media_type="application/json"
                     )
                 except Exception as e:
                     return JSONResponse({"error": str(e)}, status_code=500)
@@ -567,8 +573,10 @@ def x402_fastapi(
                     x402_response["error"] = str(e)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        content=json.dumps({}),
                         status_code=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        media_type="application/json"
                     )
                 except Exception as req_error:
                     return JSONResponse({"error": str(req_error)}, status_code=500)
@@ -654,8 +662,10 @@ def x402_protect(
                     x402_response = build_payment_requirements(pay_to, config, resource)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        response=json.dumps({}),
                         status=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        content_type="application/json"
                     )
                 except Exception as e:
                     return jsonify({"error": str(e)}), 500
@@ -679,8 +689,10 @@ def x402_protect(
                     x402_response["error"] = str(e)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        response=json.dumps({}),
                         status=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        content_type="application/json"
                     )
                 except Exception as req_error:
                     return jsonify({"error": str(req_error)}), 500
@@ -714,8 +726,10 @@ def x402_protect(
                     x402_response = build_payment_requirements(pay_to, config, resource)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        content=json.dumps({}),
                         status_code=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        media_type="application/json"
                     )
                 except Exception as e:
                     return JSONResponse({"error": str(e)}, status_code=500)
@@ -736,8 +750,10 @@ def x402_protect(
                     x402_response["error"] = str(e)
                     encoded = base64_encode(json.dumps(x402_response))
                     return Response(
+                        content=json.dumps({}),
                         status_code=402,
-                        headers={"PAYMENT-REQUIRED": encoded}
+                        headers={"PAYMENT-REQUIRED": encoded},
+                        media_type="application/json"
                     )
                 except Exception as req_error:
                     return JSONResponse({"error": str(req_error)}, status_code=500)
