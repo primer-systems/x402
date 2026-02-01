@@ -24,8 +24,29 @@ from .utils import (
     is_valid_address,
     parse_payment_header
 )
+from .wallet import (
+    create_wallet,
+    wallet_from_mnemonic,
+    get_balance,
+    x402_probe,
+    get_facilitator_info,
+    list_networks,
+    USDC_ADDRESSES,
+    WalletInfo,
+    BalanceInfo,
+    ProbeResult
+)
+from .errors import (
+    ErrorCodes,
+    X402Error,
+    InsufficientFundsError,
+    AmountExceedsMaxError,
+    ConfigError,
+    UnsupportedNetworkError,
+    InvalidResponseError
+)
 
-__version__ = "0.4.1"
+__version__ = "0.5.0"
 __all__ = [
     # Signer
     "create_signer",
@@ -41,6 +62,25 @@ __all__ = [
     "x402_fastapi",
     "x402_protect",
     "SettlementError",
+    # Wallet
+    "create_wallet",
+    "wallet_from_mnemonic",
+    "get_balance",
+    "x402_probe",
+    "get_facilitator_info",
+    "list_networks",
+    "USDC_ADDRESSES",
+    "WalletInfo",
+    "BalanceInfo",
+    "ProbeResult",
+    # Errors
+    "ErrorCodes",
+    "X402Error",
+    "InsufficientFundsError",
+    "AmountExceedsMaxError",
+    "ConfigError",
+    "UnsupportedNetworkError",
+    "InvalidResponseError",
     # Utils
     "NETWORKS",
     "BASE_NETWORKS",

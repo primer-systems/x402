@@ -1,9 +1,12 @@
 {
   "name": "@primersystems/x402",
-  "version": "0.4.3",
-  "description": "TypeScript SDK for x402 payments - pay and charge for APIs with stablecoins",
+  "version": "0.5.0",
+  "description": "TypeScript SDK for x402 payments - pay and charge for APIs with stablecoins. OpenClaw compatible.",
   "main": "index.js",
   "types": "index.d.ts",
+  "bin": {
+    "x402": "./cli.js"
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -23,7 +26,10 @@
     "ai-payments",
     "micropayments",
     "http-402",
-    "ai-agents"
+    "ai-agents",
+    "openclaw",
+    "moltbot",
+    "clawdbot"
   ],
   "author": "Primer Systems <support@primer.systems>",
   "license": "MIT",
@@ -43,6 +49,9 @@
     "signer.js",
     "payer.js",
     "payee.js",
+    "wallet.js",
+    "errors.js",
+    "cli.js",
     "testing.js",
     "testing/",
     "examples/",
@@ -55,7 +64,9 @@
     "./utils": "./utils.js",
     "./signer": "./signer.js",
     "./payer": "./payer.js",
-    "./payee": "./payee.js"
+    "./payee": "./payee.js",
+    "./wallet": "./wallet.js",
+    "./errors": "./errors.js"
   },
   "engines": {
     "node": ">=16.0.0"

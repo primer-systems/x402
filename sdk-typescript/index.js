@@ -11,6 +11,29 @@ const { x402Fetch, x402Axios, approveToken } = require('./payer');
 // Payee middleware (for charging for APIs)
 const { x402Express, x402Hono, x402Next, DEFAULT_FACILITATOR } = require('./payee');
 
+// Wallet utilities
+const {
+  createWallet,
+  walletFromMnemonic,
+  getBalance,
+  x402Probe,
+  getFacilitatorInfo,
+  listNetworks,
+  USDC_ADDRESSES
+} = require('./wallet');
+
+// Errors
+const {
+  ErrorCodes,
+  X402Error,
+  InsufficientFundsError,
+  AmountExceedsMaxError,
+  ConfigError,
+  UnsupportedNetworkError,
+  SettlementError,
+  InvalidResponseError
+} = require('./errors');
+
 module.exports = {
   // Signer
   createSigner,
@@ -25,6 +48,25 @@ module.exports = {
   x402Express,
   x402Hono,
   x402Next,
+
+  // Wallet
+  createWallet,
+  walletFromMnemonic,
+  getBalance,
+  x402Probe,
+  getFacilitatorInfo,
+  listNetworks,
+  USDC_ADDRESSES,
+
+  // Errors
+  ErrorCodes,
+  X402Error,
+  InsufficientFundsError,
+  AmountExceedsMaxError,
+  ConfigError,
+  UnsupportedNetworkError,
+  SettlementError,
+  InvalidResponseError,
 
   // Constants
   DEFAULT_FACILITATOR

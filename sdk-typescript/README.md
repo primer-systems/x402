@@ -4,9 +4,25 @@
 [![Tests](https://github.com/Primer-Systems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/Primer-Systems/x402/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**TypeScript SDK for x402 HTTP payments by [Primer](https://primer.systems).**
+**TypeScript SDK for x402 HTTP payments by [Primer](https://primer.systems).** OpenClaw compatible 🦞
 
 Easily add pay-per-request monetization to your JavaScript/TypeScript APIs using the [x402 protocol](https://x402.org). Accept stablecoin payments (USDC, EURC) or any ERC-20 token with gasless transactions—payers never pay gas fees.
+
+## Quick Start (CLI)
+
+```bash
+# Create a new wallet
+npx @primersystems/x402 wallet create
+
+# Check balance
+npx @primersystems/x402 wallet balance 0xYourAddress
+
+# Probe a URL for x402 support
+npx @primersystems/x402 probe https://api.example.com/paid
+
+# Set up for OpenClaw
+npx @primersystems/x402 openclaw init
+```
 
 ## Why x402?
 
@@ -346,7 +362,160 @@ fixtures.sample402ResponseBody  // Example 402 response structure
 fixtures.samplePaymentPayload   // Example payment payload structure
 ```
 
+## CLI Reference
+
+The SDK includes a command-line interface for wallet management, probing, and OpenClaw integration.
+
+```bash
+npx @primersystems/x402 <command> [options]
+```
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `wallet create` | Create a new wallet (address, private key, mnemonic) |
+| `wallet balance <address>` | Check USDC/ETH balance |
+| `wallet from-mnemonic` | Restore wallet from mnemonic phrase |
+| `probe <url>` | Check if URL supports x402 payments |
+| `pay <url>` | Make a payment to a 402 endpoint |
+| `networks` | List supported networks |
+| `facilitator` | Show facilitator info |
+| `openclaw init` | Set up x402 for OpenClaw agents |
+| `openclaw status` | Check OpenClaw x402 status |
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `X402_PRIVATE_KEY` | Wallet private key |
+| `X402_NETWORK` | Default network (default: base) |
+| `X402_MAX_AMOUNT` | Default max payment amount |
+| `X402_FACILITATOR` | Facilitator URL override |
+
+### Examples
+
+```bash
+# Create wallet and save output
+npx @primersystems/x402 wallet create --json > wallet.json
+
+# Check balance on Arbitrum
+npx @primersystems/x402 wallet balance 0x... --network arbitrum
+
+# Pay for an API
+X402_PRIVATE_KEY=0x... npx @primersystems/x402 pay https://api.example.com/data --max-amount 0.10
+```
+
+## Wallet Utilities
+
+New in v0.5.0 - programmatic wallet management:
+
+```javascript
+const {
+  createWallet,
+  walletFromMnemonic,
+  getBalance,
+  x402Probe
+} = require('@primersystems/x402');
+
+// Create a new wallet
+const wallet = createWallet();
+console.log(wallet.address);     // 0x...
+console.log(wallet.privateKey);  // 0x...
+console.log(wallet.mnemonic);    // "word1 word2 ..."
+
+// Restore from mnemonic
+const restored = walletFromMnemonic('word1 word2 ...');
+
+// Check balance
+const balance = await getBalance('0x...', 'base', 'USDC');
+console.log(balance.balance);  // "100.50"
+
+// Probe a URL for x402 support
+const probe = await x402Probe('https://api.example.com/paid');
+if (probe.supports402) {
+  console.log('Payment required:', probe.requirements);
+}
+```
+
+## Error Handling
+
+The SDK provides structured errors for programmatic handling:
+
+```javascript
+const { X402Error, ErrorCodes } = require('@primersystems/x402');
+
+try {
+  const response = await x402Fetch(url, signer, { maxAmount: '0.10' });
+} catch (error) {
+  if (error instanceof X402Error) {
+    switch (error.code) {
+      case ErrorCodes.INSUFFICIENT_FUNDS:
+        console.log('Need more funds:', error.details);
+        break;
+      case ErrorCodes.AMOUNT_EXCEEDS_MAX:
+        console.log('Payment too expensive:', error.details);
+        break;
+      case ErrorCodes.SETTLEMENT_FAILED:
+        console.log('Settlement failed:', error.details);
+        break;
+    }
+  }
+}
+```
+
+### Error Codes
+
+| Code | Description |
+|------|-------------|
+| `INVALID_CONFIG` | Missing or invalid configuration |
+| `MISSING_PRIVATE_KEY` | Private key not provided |
+| `UNSUPPORTED_NETWORK` | Network not supported |
+| `INSUFFICIENT_FUNDS` | Wallet balance too low |
+| `AMOUNT_EXCEEDS_MAX` | Payment exceeds maxAmount |
+| `PAYMENT_FAILED` | Payment transaction failed |
+| `SETTLEMENT_FAILED` | Facilitator settlement failed |
+| `INVALID_RESPONSE` | Malformed 402 response |
+| `MISSING_PAYMENT_HEADER` | No payment requirements header |
+
+## OpenClaw Integration
+
+This SDK is compatible with [OpenClaw](https://openclaw.ai) (formerly Moltbot/Clawdbot) AI agents.
+
+### Quick Setup
+
+```bash
+npx @primersystems/x402 openclaw init
+```
+
+This will:
+1. Create a new wallet (or use existing)
+2. Configure network settings
+3. Install the skill to `~/.openclaw/skills/primer-x402/`
+
+### Manual Installation
+
+Install the skill from ClawHub:
+
+```bash
+clawhub install primer/x402
+```
+
+Or via npm and then init:
+
+```bash
+npm install -g @primersystems/x402
+x402 openclaw init
+```
+
 ## Changelog
+
+### v0.5.0
+- **CLI**: New command-line interface (`npx @primersystems/x402 ...`)
+- **Wallet utilities**: `createWallet()`, `walletFromMnemonic()`, `getBalance()`, `x402Probe()`
+- **Structured errors**: `X402Error` class with error codes for programmatic handling
+- **OpenClaw integration**: `openclaw init` and `openclaw status` commands
+- **Environment variables**: Support for `X402_PRIVATE_KEY`, `X402_NETWORK`, `X402_MAX_AMOUNT`, `X402_FACILITATOR`
 
 ### v0.4.3
 - Cleaned up legacy v1 protocol remnants for pure v2 compliance

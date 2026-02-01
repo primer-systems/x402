@@ -4,9 +4,25 @@
 [![Python](https://img.shields.io/pypi/pyversions/primer-x402.svg)](https://pypi.org/project/primer-x402/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Python SDK for x402 HTTP payments by [Primer](https://primer.systems).**
+**Python SDK for x402 HTTP payments by [Primer](https://primer.systems).** OpenClaw compatible 🦞
 
 Easily add pay-per-request monetization to your Python APIs using the [x402 protocol](https://x402.org). Accept stablecoin payments (USDC, EURC) or any ERC-20 token with gasless transactions—payers never pay gas fees.
+
+## Quick Start (CLI)
+
+```bash
+# Create a new wallet
+x402 wallet create
+
+# Check balance
+x402 wallet balance 0xYourAddress
+
+# Probe a URL for x402 support
+x402 probe https://api.example.com/paid
+
+# Set up for OpenClaw
+x402 openclaw init
+```
 
 ## Why x402?
 
@@ -191,7 +207,70 @@ import logging
 logging.getLogger('x402').setLevel(logging.DEBUG)
 ```
 
+## CLI Reference
+
+```bash
+x402 <command> [options]
+```
+
+| Command | Description |
+|---------|-------------|
+| `wallet create` | Create a new wallet |
+| `wallet balance <address>` | Check USDC/ETH balance |
+| `wallet from-mnemonic` | Restore wallet from mnemonic |
+| `probe <url>` | Check if URL supports x402 |
+| `networks` | List supported networks |
+| `facilitator` | Show facilitator info |
+| `openclaw init` | Set up x402 for OpenClaw |
+| `openclaw status` | Check OpenClaw status |
+
+## Wallet Utilities
+
+```python
+from primer_x402 import create_wallet, get_balance, x402_probe
+
+# Create wallet
+wallet = create_wallet()
+print(wallet.address, wallet.private_key, wallet.mnemonic)
+
+# Check balance
+balance = get_balance('0x...', 'base', 'USDC')
+print(f"{balance.balance} {balance.token}")
+
+# Probe URL
+probe = x402_probe('https://api.example.com/paid')
+if probe.supports_402:
+    print(probe.requirements)
+```
+
+## Error Handling
+
+```python
+from primer_x402 import X402Error, ErrorCodes
+
+try:
+    response = session.get(url)
+except X402Error as e:
+    if e.code == ErrorCodes.INSUFFICIENT_FUNDS:
+        print(f"Need more funds: {e.details}")
+```
+
+## OpenClaw Integration
+
+```bash
+pip install primer-x402
+x402 openclaw init
+```
+
+Or install skill from ClawHub: `clawhub install primer/x402`
+
 ## Changelog
+
+### v0.5.0
+- **CLI**: New command-line interface (`x402 ...`)
+- **Wallet utilities**: `create_wallet()`, `get_balance()`, `x402_probe()`
+- **Structured errors**: `X402Error` class with error codes
+- **OpenClaw integration**: `openclaw init` and `openclaw status` commands
 
 ### v0.4.3
 - Cleaned up legacy v1 protocol remnants for pure v2 compliance
