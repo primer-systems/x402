@@ -2,16 +2,32 @@
 
 [![Tests](https://github.com/Primer-Systems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/Primer-Systems/x402/actions/workflows/test.yml)
 
-Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 payments.
+Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 payments. **OpenClaw compatible** 🦞
 
 ## Components
 
-- **sdk-typescript/** - TypeScript SDK for payers and payees
-- **sdk-python/** - Python SDK for payers and payees
+- **sdk-typescript/** - TypeScript SDK for payers and payees ([npm](https://www.npmjs.com/package/@primersystems/x402))
+- **sdk-python/** - Python SDK for payers and payees ([pypi](https://pypi.org/project/primer-x402/))
+- **openclaw/** - OpenClaw skill for AI agent payments
 - **tools/** - CLI tools for testing and token approval
 - **Contracts/** - *Prism* smart contract for ERC-20 settlements
 
-## Quick Start
+## Quick Start (CLI)
+
+```bash
+# Node.js
+npx @primersystems/x402 wallet create
+npx @primersystems/x402 probe https://api.example.com/paid
+npx @primersystems/x402 pay https://api.example.com/paid --dry-run
+
+# Python
+pip install primer-x402
+x402 wallet create
+x402 probe https://api.example.com/paid
+x402 pay https://api.example.com/paid --dry-run
+```
+
+## Quick Start (Code)
 
 ### As a Payer (Client)
 
@@ -68,6 +84,28 @@ Key v2 features:
 
 **Facilitator:** `https://x402.primer.systems` (Base networks only)
 
+## OpenClaw Integration
+
+Set up x402 payments for your AI agent with one command:
+
+```bash
+# Node.js
+npx @primersystems/x402 openclaw init
+
+# Python
+x402 openclaw init
+```
+
+This creates a wallet, configures the network, and installs the x402 skill. See [openclaw/SKILL.md](openclaw/SKILL.md) for the full skill documentation.
+
+## Links
+
+- [x402 Protocol Specification](https://x402.org)
+- [Documentation](https://primer.systems/x402)
+- [TypeScript SDK](https://www.npmjs.com/package/@primersystems/x402)
+- [Python SDK](https://pypi.org/project/primer-x402/)
+- [Primer Pay Browser Extension](https://chromewebstore.google.com/detail/primer-pay/bckienhfmjoolgkafljofomegfafanmh)
+
 ## License
 
-MIT - Primer Systems
+MIT - [Primer Systems](https://primer.systems)

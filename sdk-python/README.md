@@ -219,10 +219,37 @@ x402 <command> [options]
 | `wallet balance <address>` | Check USDC/ETH balance |
 | `wallet from-mnemonic` | Restore wallet from mnemonic |
 | `probe <url>` | Check if URL supports x402 |
+| `pay <url>` | Make a payment to a 402 endpoint |
+| `pay <url> --dry-run` | Preview payment without paying |
 | `networks` | List supported networks |
 | `facilitator` | Show facilitator info |
 | `openclaw init` | Set up x402 for OpenClaw |
 | `openclaw status` | Check OpenClaw status |
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `X402_PRIVATE_KEY` | Wallet private key |
+| `X402_NETWORK` | Default network (default: base) |
+| `X402_MAX_AMOUNT` | Default max payment amount |
+| `X402_FACILITATOR` | Facilitator URL override |
+
+### Examples
+
+```bash
+# Create wallet and save output
+x402 wallet create --json > wallet.json
+
+# Check balance on Arbitrum
+x402 wallet balance 0x... --network arbitrum
+
+# Preview payment (dry run)
+x402 pay https://api.example.com/data --dry-run
+
+# Pay for an API
+X402_PRIVATE_KEY=0x... x402 pay https://api.example.com/data --max-amount 0.10
+```
 
 ## Wallet Utilities
 

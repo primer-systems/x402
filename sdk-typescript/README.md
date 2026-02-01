@@ -379,6 +379,7 @@ npx @primersystems/x402 <command> [options]
 | `wallet from-mnemonic` | Restore wallet from mnemonic phrase |
 | `probe <url>` | Check if URL supports x402 payments |
 | `pay <url>` | Make a payment to a 402 endpoint |
+| `pay <url> --dry-run` | Preview payment without paying |
 | `networks` | List supported networks |
 | `facilitator` | Show facilitator info |
 | `openclaw init` | Set up x402 for OpenClaw agents |
@@ -401,6 +402,9 @@ npx @primersystems/x402 wallet create --json > wallet.json
 
 # Check balance on Arbitrum
 npx @primersystems/x402 wallet balance 0x... --network arbitrum
+
+# Preview payment (dry run)
+npx @primersystems/x402 pay https://api.example.com/data --dry-run
 
 # Pay for an API
 X402_PRIVATE_KEY=0x... npx @primersystems/x402 pay https://api.example.com/data --max-amount 0.10
