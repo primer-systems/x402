@@ -1,7 +1,7 @@
 # @primersystems/x402
 
 [![npm version](https://img.shields.io/npm/v/@primersystems/x402.svg)](https://www.npmjs.com/package/@primersystems/x402)
-[![Tests](https://github.com/Primer-Systems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/Primer-Systems/x402/actions/workflows/test.yml)
+[![Tests](https://github.com/primer-systems/x402/actions/workflows/test.yml/badge.svg)](https://github.com/primer-systems/x402/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **TypeScript SDK for x402 HTTP payments by [Primer](https://primer.systems).** OpenClaw compatible 🦞
@@ -554,7 +554,7 @@ x402 openclaw init
 
 - [x402 Protocol Specification](https://x402.org)
 - [Primer Systems](https://primer.systems)
-- [GitHub Repository](https://github.com/Primer-Systems/x402)
+- [GitHub Repository](https://github.com/primer-systems/x402)
 - [Python SDK](https://pypi.org/project/primer-x402/)
 
 ## License

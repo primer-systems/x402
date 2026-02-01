@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "primer-x402"
-version = "0.5.0"
+version = "0.5.1"
 description = "Python SDK for x402 payments - pay and charge for APIs with stablecoins. OpenClaw compatible."
 readme = "README.md"
 license = {text = "MIT"}
@@ -75,8 +75,8 @@ x402 = "primer_x402.cli:main"
 [project.urls]
 Homepage = "https://x402.org"
 Documentation = "https://x402.org/docs"
-Repository = "https://github.com/Primer-Systems/x402"
-Issues = "https://github.com/Primer-Systems/x402/issues"
+Repository = "https://github.com/primer-systems/x402"
+Issues = "https://github.com/primer-systems/x402/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

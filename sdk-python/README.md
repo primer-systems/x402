@@ -321,7 +321,7 @@ Or install skill from ClawHub: `clawhub install primer/x402`
 
 - [x402 Protocol Specification](https://x402.org)
 - [Primer Systems](https://primer.systems)
-- [GitHub Repository](https://github.com/Primer-Systems/x402)
+- [GitHub Repository](https://github.com/primer-systems/x402)
 - [TypeScript SDK](https://www.npmjs.com/package/@primersystems/x402)
 
 ## License

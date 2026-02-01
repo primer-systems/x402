@@ -4,7 +4,7 @@
   "description": "HTTP-native crypto payments using the x402 protocol",
   "author": "Primer Systems",
   "homepage": "https://primer.systems/x402",
-  "repository": "https://github.com/Primer-Systems/x402",
+  "repository": "https://github.com/primer-systems/x402",
   "keywords": [
     "x402",
     "payments",

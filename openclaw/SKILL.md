@@ -203,4 +203,4 @@ Primer Pay automatically detects 402 responses and offers one-click payment in t
 - **SDK (npm)**: https://npmjs.com/package/@primersystems/x402
 - **SDK (pip)**: https://pypi.org/project/primer-x402
 - **Primer Pay Extension**: https://chromewebstore.google.com/detail/primer-pay/bckienhfmjoolgkafljofomegfafanmh
-- **GitHub**: https://github.com/Primer-Systems/x402
+- **GitHub**: https://github.com/primer-systems/x402
