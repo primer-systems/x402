@@ -1,0 +1,102 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xclaw02"
+version = "0.1.1"
+description = "xClaw02 - x402 payments SDK for OpenClaw agents. Pay and charge for APIs with stablecoins."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Primer Systems", email = "support@primer.systems"}
+]
+keywords = [
+    "x402",
+    "xclaw02",
+    "payments",
+    "crypto",
+    "usdc",
+    "stablecoin",
+    "ethereum",
+    "base",
+    "eip-3009",
+    "web3",
+    "ai-payments",
+    "micropayments",
+    "http-402",
+    "ai-agents",
+    "openclaw",
+    "clawhub"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Office/Business :: Financial",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "web3>=6.0.0",
+    "eth-account>=0.11.0",
+    "requests>=2.28.0",
+]
+
+[project.optional-dependencies]
+httpx = ["httpx>=0.24.0"]
+flask = ["flask>=2.0.0"]
+fastapi = ["fastapi>=0.100.0", "starlette>=0.27.0"]
+all = [
+    "httpx>=0.24.0",
+    "flask>=2.0.0",
+    "fastapi>=0.100.0",
+    "starlette>=0.27.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "httpx>=0.24.0",
+    "flask>=2.0.0",
+    "fastapi>=0.100.0",
+    "starlette>=0.27.0",
+]
+
+[project.scripts]
+xclaw02 = "xclaw02.cli:main"
+
+[project.urls]
+Homepage = "https://x402.org"
+Documentation = "https://x402.org/docs"
+Repository = "https://github.com/primer-systems/xClaw02"
+Issues = "https://github.com/primer-systems/xClaw02/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["xclaw02*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["xclaw02"]
+omit = ["tests/*", "xclaw02/testing/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

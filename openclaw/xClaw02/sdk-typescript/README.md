@@ -1,0 +1,510 @@
+# xClaw02
+
+[![npm version](https://img.shields.io/npm/v/xclaw02.svg)](https://www.npmjs.com/package/xclaw02)
+[![Python](https://img.shields.io/pypi/pyversions/xclaw02.svg)](https://pypi.org/project/xclaw02/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**TypeScript SDK for x402 HTTP payments by [Primer](https://primer.systems).** OpenClaw compatible 🦞
+
+Easily add pay-per-request monetization to your JavaScript/TypeScript APIs using the [x402 protocol](https://x402.org). Accept stablecoin payments (USDC, EURC) or any ERC-20 token with gasless transactions—payers never pay gas fees.
+
+## Quick Start (CLI)
+
+```bash
+# Create a new wallet
+xclaw02 wallet create
+
+# Check balance
+xclaw02 wallet balance 0xYourAddress
+
+# Probe a URL for x402 support
+xclaw02 probe https://api.example.com/paid
+
+# Set up for OpenClaw
+xclaw02 openclaw init
+```
+
+## Why x402?
+
+- **HTTP-native payments** - Uses the standard HTTP 402 Payment Required status code
+- **Gasless for payers** - Payments are authorized via EIP-712 signatures; facilitators handle gas
+- **Stablecoin support** - Native support for USDC/EURC via EIP-3009 `transferWithAuthorization`
+- **Any ERC-20 token** - Support for other tokens via Primer's *Prism* settlement contract
+- **Multi-chain** - Base, Ethereum, Arbitrum, Optimism, Polygon (mainnet + testnet)
+- **Framework integrations** - Express, Hono, Next.js middleware included
+- **Testing utilities** - Mock facilitator for integration testing
+
+## Installation
+
+```bash
+npm install xclaw02
+```
+
+## Payer (Client)
+
+Wrap fetch or axios to automatically handle 402 responses:
+
+```javascript
+const { createSigner, x402Fetch, x402Axios } = require('xclaw02');
+
+// Create a signer (use CAIP-2 network format)
+const signer = await createSigner('eip155:8453', process.env.PRIVATE_KEY);
+
+// Wrap fetch
+const fetch402 = x402Fetch(fetch, signer, { maxAmount: '1.00' });
+const response = await fetch402('https://example.com/api/paywall');
+
+// Or wrap axios
+const axios402 = x402Axios(axios.create(), signer, { maxAmount: '1.00' });
+const response = await axios402.get('https://example.com/api/paywall');
+```
+
+### Options
+
+| Option | Required | Description |
+|--------|----------|-------------|
+| `maxAmount` | Yes | Maximum payment per request (e.g., '1.00') |
+| `facilitator` | No | Custom facilitator URL |
+| `verify` | No | Verify payment before sending (default: true) |
+
+## Payee (Server)
+
+Middleware for Express, Hono, and Next.js:
+
+### Express
+
+```javascript
+const { x402Express } = require('xclaw02');
+
+app.use(x402Express('0xYourAddress', {
+  '/api/paywall': {
+    amount: '0.01',
+    asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    network: 'eip155:8453'  // CAIP-2 format
+  },
+  '/api/data/*': {
+    amount: '0.001',
+    asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    network: 'eip155:8453'  // CAIP-2 format
+  }
+}));
+```
+
+### Hono
+
+```javascript
+const { x402Hono } = require('xclaw02');
+
+app.use('*', x402Hono('0xYourAddress', {
+  '/api/paywall': { amount: '0.01', asset: '0x...', network: 'eip155:8453' }
+}));
+```
+
+### Next.js
+
+```javascript
+// App Router (Next.js 13+)
+import { x402Next } from 'xclaw02';
+
+async function handler(req) {
+  return Response.json({ data: 'paywall' });
+}
+
+export const GET = x402Next(handler, {
+  payTo: '0xYourAddress',
+  amount: '0.01',
+  asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  network: 'eip155:8453'  // CAIP-2 format
+});
+```
+
+## Token Types
+
+### EIP-3009 Tokens (USDC, EURC)
+
+These tokens support gasless transfers natively via `transferWithAuthorization`. The payer signs an authorization, and the facilitator executes the transfer—payer pays zero gas.
+
+### Standard ERC-20 Tokens
+
+For other ERC-20 tokens, Primer's *Prism* contract enables gasless payments:
+
+1. **One-time approval** - Approve the Prism contract to spend your tokens
+2. **Gasless payments** - Sign authorizations; Prism handles the transfers
+
+```javascript
+const { createSigner, approveToken } = require('xclaw02');
+
+const signer = await createSigner('eip155:8453', process.env.PRIVATE_KEY);
+
+// One-time approval (this transaction requires gas)
+await approveToken(signer, '0xTokenAddress');
+
+// Now you can make gasless payments with this token
+```
+
+## Networks
+
+Networks use [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-2.md) identifiers (e.g., `eip155:8453` for Base).
+
+| Network (CAIP-2) | Chain ID | Legacy Name | Default Facilitator |
+|------------------|----------|-------------|---------------------|
+| eip155:8453 | 8453 | base | ✓ Primer |
+| eip155:84532 | 84532 | base-sepolia | ✓ Primer |
+| eip155:1 | 1 | ethereum | Custom required |
+| eip155:11155111 | 11155111 | sepolia | Custom required |
+| eip155:42161 | 42161 | arbitrum | Custom required |
+| eip155:421614 | 421614 | arbitrum-sepolia | Custom required |
+| eip155:10 | 10 | optimism | Custom required |
+| eip155:11155420 | 11155420 | optimism-sepolia | Custom required |
+| eip155:137 | 137 | polygon | Custom required |
+| eip155:80002 | 80002 | polygon-amoy | Custom required |
+
+> **Note:** Legacy network names (e.g., `'base'`) are still accepted for backward compatibility but CAIP-2 format is recommended.
+
+### Custom Facilitator
+
+For non-Base networks, you must provide your own facilitator:
+
+```javascript
+// Payee
+app.use(x402Express('0xYourAddress', {
+  '/api/paywall': { amount: '0.01', asset: '0x...', network: 'eip155:1' }
+}, { facilitator: 'https://your-facilitator.com' }));
+
+// Payer
+const fetch402 = x402Fetch(fetch, signer, {
+  maxAmount: '1.00',
+  facilitator: 'https://your-facilitator.com'
+});
+```
+
+## Debug Logging
+
+```bash
+DEBUG=x402:* node app.js
+DEBUG=x402:payer,x402:payee node app.js
+```
+
+## Testing Your Integration
+
+The SDK provides testing utilities to help you test your x402 integration without making real payments. Import from `xclaw02/testing`:
+
+```javascript
+const {
+  createMockFacilitator,
+  createTestPayment,
+  createTest402Response,
+  fixtures
+} = require('xclaw02/testing');
+```
+
+### What's Provided
+
+| Utility | Purpose |
+|---------|---------|
+| `createMockFacilitator()` | Fake payment server that approves/rejects without blockchain |
+| `createTestPayment()` | Generate valid X-PAYMENT headers without a real wallet |
+| `createTest402Response()` | Generate 402 responses for testing client code |
+| `fixtures` | Pre-built test addresses, route configs, and sample payloads |
+
+### Testing a Payee (Server)
+
+If you've built an API with x402 payments, test it like this:
+
+```javascript
+// my-api.test.js
+const request = require('supertest');
+const app = require('./my-app');
+const { createMockFacilitator, createTestPayment } = require('xclaw02/testing');
+
+describe('My Paid API', () => {
+  let mockFac;
+
+  beforeAll(async () => {
+    // Start a fake facilitator on port 3001
+    mockFac = await createMockFacilitator({ port: 3001 });
+  });
+
+  afterAll(async () => {
+    await mockFac.close();
+  });
+
+  test('returns 402 when no payment provided', async () => {
+    const res = await request(app).get('/api/premium');
+    expect(res.status).toBe(402);
+    expect(res.headers['payment-required']).toBeDefined();
+  });
+
+  test('returns 200 when valid payment provided', async () => {
+    const payment = createTestPayment({ amount: '10000' }); // 0.01 USDC
+
+    const res = await request(app)
+      .get('/api/premium')
+      .set('X-PAYMENT', payment);
+
+    expect(res.status).toBe(200);
+  });
+
+  test('rejects insufficient payment', async () => {
+    const payment = createTestPayment({ amount: '1' }); // way too little
+
+    const res = await request(app)
+      .get('/api/premium')
+      .set('X-PAYMENT', payment);
+
+    expect(res.status).toBe(402);
+  });
+});
+```
+
+**Important:** Point your middleware at the mock facilitator during tests:
+
+```javascript
+// In your app setup for tests
+const middleware = x402Express(payTo, routes, {
+  facilitator: 'http://127.0.0.1:3001'  // Mock facilitator URL
+});
+```
+
+### Testing a Payer (Client)
+
+If you've built a client that pays for APIs, test the 402 handling:
+
+```javascript
+const { createTest402Response, fixtures } = require('xclaw02/testing');
+
+test('client handles 402 response', async () => {
+  // Create a mock server that returns 402
+  const server = setupMockServer((req, res) => {
+    const body = createTest402Response({
+      amount: '10000',
+      payTo: fixtures.TEST_ADDRESSES.payee,
+      resource: '/api/data'
+    });
+    res.status(402)
+       .set('PAYMENT-REQUIRED', Buffer.from(JSON.stringify(body)).toString('base64'))
+       .end();
+  });
+
+  // Test your client handles it correctly
+  const result = await myClient.fetchWithPayment('/api/data');
+  expect(result).toBeDefined();
+});
+```
+
+### Mock Facilitator Options
+
+```javascript
+// Auto-approve all payments (default)
+const mock = await createMockFacilitator({ mode: 'approve' });
+
+// Reject all payments
+const mock = await createMockFacilitator({ mode: 'reject' });
+
+// Custom logic
+const mock = await createMockFacilitator({
+  mode: 'custom',
+  handler: (payload) => {
+    const amount = payload.paymentRequirements?.maxAmountRequired;
+    if (parseInt(amount) > 1000000) {
+      return { success: false, error: 'Amount too high for test' };
+    }
+    return { success: true, transaction: '0x' + 'f'.repeat(64) };
+  }
+});
+
+// Add artificial latency (for timeout testing)
+const mock = await createMockFacilitator({ latencyMs: 5000 });
+```
+
+### Inspecting Requests
+
+The mock facilitator records all requests for assertions:
+
+```javascript
+const mock = await createMockFacilitator();
+
+// ... run your test ...
+
+// Check what was sent to the facilitator
+expect(mock.requests.length).toBe(1);
+expect(mock.lastRequest().payload.paymentRequirements.network).toBe('eip155:8453');
+
+// Clear between tests
+mock.clearRequests();
+```
+
+### createTestPayment Options
+
+```javascript
+createTestPayment({
+  amount: '10000',             // Amount in smallest units (default: '10000')
+  from: '0x...',               // Payer address (default: test address)
+  to: '0x...',                 // Payee address (default: test address)
+  network: 'eip155:84532',     // Network in CAIP-2 format (default: 'eip155:8453')
+  validForSeconds: 7200        // Validity window (default: 3600)
+});
+```
+
+### Available Fixtures
+
+```javascript
+const { fixtures } = require('xclaw02/testing');
+
+fixtures.TEST_ADDRESSES.payer   // '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+fixtures.TEST_ADDRESSES.payee   // '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+
+fixtures.USDC_ADDRESSES['eip155:8453']   // USDC on Base mainnet
+fixtures.USDC_ADDRESSES['eip155:84532']  // USDC on Base Sepolia
+
+fixtures.sampleRouteConfig      // Example route config for middleware
+fixtures.sample402ResponseBody  // Example 402 response structure
+fixtures.samplePaymentPayload   // Example payment payload structure
+```
+
+## CLI Reference
+
+The SDK includes a command-line interface for wallet management, probing, and OpenClaw integration.
+
+```bash
+xclaw02 <command> [options]
+```
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `wallet create` | Create a new wallet (address, private key, mnemonic) |
+| `wallet balance <address>` | Check USDC/ETH balance |
+| `wallet from-mnemonic` | Restore wallet from mnemonic phrase |
+| `probe <url>` | Check if URL supports x402 payments |
+| `pay <url>` | Make a payment to a 402 endpoint |
+| `pay <url> --dry-run` | Preview payment without paying |
+| `networks` | List supported networks |
+| `facilitator` | Show facilitator info |
+| `openclaw init` | Set up x402 for OpenClaw agents |
+| `openclaw status` | Check OpenClaw x402 status |
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `XCLAW02_PRIVATE_KEY` | Wallet private key |
+| `XCLAW02_NETWORK` | Default network (default: base) |
+| `XCLAW02_MAX_AMOUNT` | Default max payment amount |
+| `XCLAW02_FACILITATOR` | Facilitator URL override |
+
+### Examples
+
+```bash
+# Create wallet and save output
+xclaw02 wallet create --json > wallet.json
+
+# Check balance on Arbitrum
+xclaw02 wallet balance 0x... --network arbitrum
+
+# Preview payment (dry run)
+xclaw02 pay https://api.example.com/data --dry-run
+
+# Pay for an API
+XCLAW02_PRIVATE_KEY=0x... xclaw02 pay https://api.example.com/data --max-amount 0.10
+```
+
+## Wallet Utilities
+
+```javascript
+const {
+  createWallet,
+  walletFromMnemonic,
+  getBalance,
+  x402Probe
+} = require('xclaw02');
+
+// Create a new wallet
+const wallet = createWallet();
+console.log(wallet.address);     // 0x...
+console.log(wallet.privateKey);  // 0x...
+console.log(wallet.mnemonic);    // "word1 word2 ..."
+
+// Restore from mnemonic
+const restored = walletFromMnemonic('word1 word2 ...');
+
+// Check balance
+const balance = await getBalance('0x...', 'base', 'USDC');
+console.log(balance.balance);  // "100.50"
+
+// Probe a URL for x402 support
+const probe = await x402Probe('https://api.example.com/paid');
+if (probe.supports402) {
+  console.log('Payment required:', probe.requirements);
+}
+```
+
+## Error Handling
+
+The SDK provides structured errors for programmatic handling:
+
+```javascript
+const { X402Error, ErrorCodes } = require('xclaw02');
+
+try {
+  const response = await x402Fetch(url, signer, { maxAmount: '0.10' });
+} catch (error) {
+  if (error instanceof X402Error) {
+    switch (error.code) {
+      case ErrorCodes.INSUFFICIENT_FUNDS:
+        console.log('Need more funds:', error.details);
+        break;
+      case ErrorCodes.AMOUNT_EXCEEDS_MAX:
+        console.log('Payment too expensive:', error.details);
+        break;
+      case ErrorCodes.SETTLEMENT_FAILED:
+        console.log('Settlement failed:', error.details);
+        break;
+    }
+  }
+}
+```
+
+### Error Codes
+
+| Code | Description |
+|------|-------------|
+| `INVALID_CONFIG` | Missing or invalid configuration |
+| `MISSING_PRIVATE_KEY` | Private key not provided |
+| `UNSUPPORTED_NETWORK` | Network not supported |
+| `INSUFFICIENT_FUNDS` | Wallet balance too low |
+| `AMOUNT_EXCEEDS_MAX` | Payment exceeds maxAmount |
+| `PAYMENT_FAILED` | Payment transaction failed |
+| `SETTLEMENT_FAILED` | Facilitator settlement failed |
+| `INVALID_RESPONSE` | Malformed 402 response |
+| `MISSING_PAYMENT_HEADER` | No payment requirements header |
+
+## OpenClaw Integration
+
+```bash
+npm install xclaw02
+xclaw02 openclaw init
+```
+
+Or install skill from ClawHub: `clawhub install xclaw02`
+
+## Changelog
+
+### v0.1.0
+- Initial release
+- CLI for wallet management, probing, and payments
+- Express, Hono, and Next.js middleware
+- Testing utilities with mock facilitator
+- OpenClaw skill integration
+
+## Links
+
+- [x402 Protocol Specification](https://x402.org)
+- [Primer Systems](https://primer.systems)
+- [GitHub Repository](https://github.com/primer-systems/x402)
+- [Python SDK](https://pypi.org/project/xclaw02/)
+
+## License
+
+MIT - [Primer Systems](https://primer.systems)
