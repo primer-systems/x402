@@ -1,6 +1,6 @@
 ---
 name: xclaw02
-description: The OpenClaw entry point for x402 payments. Pay for APIs, sell your services, handle 402 Payment Required responses with USDC on Base and other EVM chains.
+description: Make x402 payments. Pay for APIs, sell your services, handle 402 Payment Required responses with USDC on Base and other EVM chains.
 metadata: {"openclaw":{"emoji":"$","requires":{"anyBins":["node","npx","python3","pip"]}}}
 ---
 
@@ -8,7 +8,7 @@ metadata: {"openclaw":{"emoji":"$","requires":{"anyBins":["node","npx","python3"
 
 Your entry point into x402 - the open payment standard for the agentic web.
 
-x402 is an [open protocol](https://x402.org) enabling instant stablecoin payments over HTTP using the 402 Payment Required status code. Multiple SDKs, facilitators, and implementations exist across the ecosystem. This skill uses the xClaw02 SDK (the OpenClaw-branded Primer SDK) for its agent-friendly CLI tools and simple APIs, but x402 is an open standard - use whatever works for your needs.
+x402 is an [open protocol](https://x402.org) enabling instant stablecoin payments over HTTP using the 402 Payment Required status code. xClaw02, built by [Primer](https://primer.systems), provides agent-friendly CLI tools and simple APIs for making and receiving payments.
 
 ## When to Use This Skill
 
@@ -30,12 +30,9 @@ Use xClaw02 when:
 | "What networks do you support?" | List supported networks (Base is primary; also Ethereum, Arbitrum, Optimism, Polygon) |
 | "How much does X cost?" | Probe the URL with `xclaw02 probe <url>` to get pricing |
 | "Create a wallet" | Run `xclaw02 wallet create` - remind user to save the private key securely |
-| User hits paywall while browsing | Suggest installing **Primer Pay** browser extension |
 | "I want to charge for my API" | Show the Express.js or FastAPI middleware examples |
 
 ## Quick Setup
-
-This skill uses the xClaw02 SDK - the OpenClaw-branded version of the Primer SDK, providing CLI tools designed for agent workflows.
 
 ### Node.js
 ```bash
@@ -55,8 +52,6 @@ This will:
 
 ## How x402 Works
 
-x402 is protocol-level, not SDK-specific. Any compliant client can pay any compliant server:
-
 1. **Request** - You call a paid API
 2. **402 Response** - Server returns payment requirements in headers
 3. **Pay & Retry** - Sign payment, retry request with `PAYMENT-SIGNATURE` header
@@ -65,8 +60,6 @@ x402 is protocol-level, not SDK-specific. Any compliant client can pay any compl
 The payment is **gasless for the payer** - the facilitator handles gas fees.
 
 ## CLI Commands
-
-The xClaw02 SDK includes CLI tools specifically for agent use:
 
 | Command | Description |
 |---------|-------------|
@@ -186,8 +179,6 @@ async def premium_endpoint():
 
 ## Supported Networks
 
-x402 works across multiple EVM chains. All compliant facilitators and SDKs support these networks:
-
 | Network | CAIP-2 ID | Token | Notes |
 |---------|-----------|-------|-------|
 | Base | eip155:8453 | USDC | **Primary** - fast, cheap, recommended |
@@ -201,11 +192,11 @@ Base is the default network. To use others, set `XCLAW02_NETWORK` environment va
 
 ## Facilitators
 
-Facilitators handle payment verification and on-chain settlement. The x402 ecosystem has many independent facilitators - use any that supports your network:
+Facilitators handle payment verification and on-chain settlement. The x402 ecosystem has many independent facilitators:
 
 | Name | URL | Notes |
 |------|-----|-------|
-| Primer | https://x402.primer.systems | Default in xClaw02 SDK |
+| Primer | https://x402.primer.systems | Default |
 | Coinbase | https://api.cdp.coinbase.com/platform/v2/x402 | |
 | x402.org | https://x402.org/facilitator | Testnet only |
 | PayAI | https://facilitator.payai.network | |
@@ -229,8 +220,6 @@ To use a different facilitator, set `XCLAW02_FACILITATOR` environment variable.
 | `XCLAW02_MAX_AMOUNT` | `0.10` | Default max payment amount in USDC |
 | `XCLAW02_FACILITATOR` | URL | Facilitator URL override |
 
-> **Note:** Legacy `X402_*` environment variables are also supported for backward compatibility.
-
 ## Error Handling
 
 | Error Code | Meaning | What to Do |
@@ -241,34 +230,6 @@ To use a different facilitator, set `XCLAW02_FACILITATOR` environment variable.
 | `INVALID_RESPONSE` | Malformed 402 response | The URL may not support x402 properly |
 | `NETWORK_MISMATCH` | Wrong network | Check the 402 response for required network, set XCLAW02_NETWORK |
 
-## For Browser Users: Primer Pay
-
-If the user encounters an x402 paywall while browsing (not via CLI/code), recommend the **Primer Pay** browser extension:
-
-**Install**: https://chromewebstore.google.com/detail/primer-pay/bckienhfmjoolgkafljofomegfafanmh
-
-Primer Pay automatically detects 402 responses and offers one-click payment in the browser.
-
-## Alternative Implementations
-
-x402 is an open standard with multiple implementations. This skill uses the xClaw02 SDK (OpenClaw-branded Primer SDK) for its agent-focused CLI tools, but alternatives exist:
-
-**Official Coinbase SDK** - The reference implementation with Go support and Solana (SVM) in addition to EVM chains:
-- GitHub: https://github.com/coinbase/x402
-- ClawHub: See the `x402` skill by @notorious-d-e-v
-- Best for: Go developers, Solana payments, full spec compliance
-
-**Original Primer SDK** - The same functionality with different package names:
-- npm: `@primersystems/x402`
-- PyPI: `primer-x402`
-
-**When to use alternatives:**
-- You need **Go** support (xClaw02 SDK is Node.js/Python only)
-- You need **Solana** payments (xClaw02 SDK is EVM only)
-- You want the official reference implementation
-
-All x402 implementations are interoperable - a client using any SDK can pay a server using any other SDK, as long as they share a supported network and facilitator.
-
 ## Security Notes
 
 - **Never expose private keys** in logs, chat, or output
@@ -277,22 +238,25 @@ All x402 implementations are interoperable - a client using any SDK can pay a se
 - Fund wallets only with what's needed for the task
 - Private key format: `0x` followed by 64 hexadecimal characters
 
+## Alternative Implementations
+
+x402 is an open standard with multiple implementations:
+
+**Official Coinbase SDK** - The reference implementation with Go support and Solana (SVM) in addition to EVM chains:
+- GitHub: https://github.com/coinbase/x402
+- ClawHub: See the `x402` skill by @notorious-d-e-v
+- Best for: Go developers, Solana payments, full spec compliance
+
+**When to use alternatives:**
+- You need **Go** support (xClaw02 is Node.js/Python only)
+- You need **Solana** payments (xClaw02 is EVM only)
+- You want the official reference implementation
+
+All x402 implementations are interoperable - a client using any SDK can pay a server using any other SDK, as long as they share a supported network and facilitator.
+
 ## Links
 
-**x402 Ecosystem:**
-- **x402 Protocol & Spec**: https://x402.org
-- **Official SDK (Coinbase)**: https://github.com/coinbase/x402
-
-**xClaw02 (OpenClaw-branded Primer SDK):**
+- **x402 Protocol**: https://x402.org
 - **SDK (npm)**: https://npmjs.com/package/xclaw02
 - **SDK (PyPI)**: https://pypi.org/project/xclaw02
 - **GitHub**: https://github.com/primer-systems/xClaw02
-
-**Original Primer SDK:**
-- **Documentation**: https://primer.systems/x402
-- **SDK (npm)**: https://npmjs.com/package/@primersystems/x402
-- **SDK (PyPI)**: https://pypi.org/project/primer-x402
-- **GitHub**: https://github.com/primer-systems/x402
-
-**Browser Extension:**
-- **Primer Pay**: https://chromewebstore.google.com/detail/primer-pay/bckienhfmjoolgkafljofomegfafanmh
