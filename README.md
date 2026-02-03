@@ -10,7 +10,7 @@ Implementation of the [x402 payment protocol](https://x402.org) for HTTP 402 pay
 - **sdk-python/** - Python SDK for payers and payees ([pypi](https://pypi.org/project/primer-x402/))
 - **openclaw/** - OpenClaw skill for AI agent payments
 - **tools/** - CLI tools for testing and token approval
-- **Contracts/** - *Prism* smart contract for ERC-20 settlements
+- **Contracts/** - *Prism* smart contract for ERC-20 settlements 
 
 ## Quick Start (CLI)
 
@@ -109,3 +109,4 @@ This creates a wallet, configures the network, and installs the x402 skill. See 
 ## License
 
 MIT - [Primer Systems](https://primer.systems)
+
