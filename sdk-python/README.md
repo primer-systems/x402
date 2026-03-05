@@ -136,6 +136,8 @@ Networks use [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/cai
 | Arbitrum | `eip155:42161` | Custom required |
 | Optimism | `eip155:10` | Custom required |
 | Polygon | `eip155:137` | Custom required |
+| SKALE Base | `eip155:1187947933` | Primer |
+| SKALE Base Sepolia | `eip155:324705682` | Primer |
 
 > Legacy network names (`'base'`, `'ethereum'`) are accepted for compatibility but CAIP-2 is recommended.
 
@@ -292,6 +294,10 @@ x402 openclaw init
 Or install skill from ClawHub: `clawhub install primer/x402`
 
 ## Changelog
+
+### v0.6.0
+- **SKALE network support**: Added SKALE Base (`eip155:1187947933`) and SKALE Base Sepolia (`eip155:324705682`) networks
+- Gas-free transactions on SKALE with Primer facilitator support
 
 ### v0.5.0
 - **CLI**: New command-line interface (`x402 ...`)

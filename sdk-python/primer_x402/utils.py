@@ -264,6 +264,21 @@ NETWORKS: Dict[str, NetworkConfig] = {
         legacy_name="polygon-amoy",
         rpc_url="https://rpc-amoy.polygon.technology"
     ),
+    # SKALE
+    "eip155:1187947933": NetworkConfig(
+        name="SKALE Base",
+        chain_id=1187947933,
+        caip_id="eip155:1187947933",
+        legacy_name="skale-base",
+        rpc_url="https://mainnet.skalenodes.com/v1/honorable-steel-rasalhague"
+    ),
+    "eip155:324705682": NetworkConfig(
+        name="SKALE Base Sepolia",
+        chain_id=324705682,
+        caip_id="eip155:324705682",
+        legacy_name="skale-base-sepolia",
+        rpc_url="https://testnet.skalenodes.com/v1/juicy-low-small-testnet"
+    ),
 }
 
 

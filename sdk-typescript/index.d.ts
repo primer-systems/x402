@@ -9,7 +9,7 @@ type WalletClient = any;
 // Networks
 // ============================================
 
-export type NetworkName = 'base' | 'base-sepolia';
+export type NetworkName = 'base' | 'base-sepolia' | 'skale-base' | 'skale-base-sepolia';
 
 export interface NetworkConfig {
   name: string;

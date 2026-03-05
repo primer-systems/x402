@@ -158,6 +158,8 @@ Networks use [CAIP-2](https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/cai
 | eip155:11155420 | 11155420 | optimism-sepolia | Custom required |
 | eip155:137 | 137 | polygon | Custom required |
 | eip155:80002 | 80002 | polygon-amoy | Custom required |
+| eip155:1187947933 | 1187947933 | skale-base | ✓ Primer |
+| eip155:324705682 | 324705682 | skale-base-sepolia | ✓ Primer |
 
 > **Note:** Legacy network names (e.g., `'base'`) are still accepted for backward compatibility but CAIP-2 format is recommended.
 
@@ -513,6 +515,10 @@ x402 openclaw init
 ```
 
 ## Changelog
+
+### v0.6.0
+- **SKALE network support**: Added SKALE Base (`eip155:1187947933`) and SKALE Base Sepolia (`eip155:324705682`) networks
+- Gas-free transactions on SKALE with Primer facilitator support
 
 ### v0.5.0
 - **CLI**: New command-line interface (`npx @primersystems/x402 ...`)

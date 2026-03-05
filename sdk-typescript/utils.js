@@ -102,6 +102,21 @@ const NETWORKS = {
     caipId: 'eip155:80002',
     legacyName: 'polygon-amoy',
     rpcUrl: process.env.RPC_POLYGON_AMOY || 'https://rpc-amoy.polygon.technology'
+  },
+  // SKALE
+  'eip155:1187947933': {
+    name: 'SKALE Base',
+    chainId: 1187947933,
+    caipId: 'eip155:1187947933',
+    legacyName: 'skale-base',
+    rpcUrl: process.env.RPC_SKALE_BASE || 'https://mainnet.skalenodes.com/v1/honorable-steel-rasalhague'
+  },
+  'eip155:324705682': {
+    name: 'SKALE Base Sepolia',
+    chainId: 324705682,
+    caipId: 'eip155:324705682',
+    legacyName: 'skale-base-sepolia',
+    rpcUrl: process.env.RPC_SKALE_BASE_SEPOLIA || 'https://testnet.skalenodes.com/v1/juicy-low-small-testnet'
   }
 };
 
