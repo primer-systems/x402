@@ -293,7 +293,48 @@ x402 openclaw init
 
 Or install skill from ClawHub: `clawhub install primer/x402`
 
+## Bittensor Integration
+
+The SDK includes templates for integrating with [Bittensor](https://bittensor.com) subnets, enabling pay-per-inference access to decentralized AI.
+
+### Chutes Proxy
+
+Scaffold a pay-per-inference proxy for [Chutes AI](https://chutes.ai) (Bittensor Subnet 64):
+
+```bash
+x402 create chutes-proxy my-ai-proxy
+cd my-ai-proxy
+pip install -r requirements.txt
+```
+
+This creates a ready-to-deploy FastAPI proxy that:
+- Accepts USDC payments on Base via x402
+- Forwards requests to Chutes API for AI inference
+- Supports all Chutes models (DeepSeek, Qwen, Llama, etc.)
+- Deploys via Docker to any host
+
+Configure and run:
+
+```bash
+cp .env.example .env
+# Edit .env with your Chutes API key and wallet address
+uvicorn main:app --reload
+```
+
+See the generated `README.md` for Docker deployment and full documentation.
+
+### Why Bittensor + x402?
+
+- **No TAO required**: Users pay with USDC instead of needing Bittensor tokens
+- **No subscriptions**: True pay-per-request micropayments
+- **Decentralized AI**: Access Bittensor's distributed inference network
+- **Your margin**: Set your own pricing above Chutes' cost
+
 ## Changelog
+
+### v0.7.0
+- **Bittensor integration**: New `x402 create chutes-proxy` command to scaffold a pay-per-inference proxy for Bittensor Chutes AI
+- **Project scaffolding**: CLI now supports project templates via `x402 create <template>`
 
 ### v0.6.0
 - **SKALE network support**: Added SKALE Base (`eip155:1187947933`) and SKALE Base Sepolia (`eip155:324705682`) networks

@@ -1,0 +1,30 @@
+{
+  "name": "chutes-x402-proxy",
+  "version": "1.0.0",
+  "description": "Pay-per-inference proxy for Bittensor Chutes AI using x402 micropayments",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@primersystems/x402": "^0.7.0",
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240117.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^3.0.0"
+  },
+  "keywords": [
+    "x402",
+    "bittensor",
+    "chutes",
+    "ai",
+    "inference",
+    "micropayments",
+    "crypto"
+  ],
+  "license": "MIT"
+}

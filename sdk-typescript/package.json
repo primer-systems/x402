@@ -1,6 +1,6 @@
 {
   "name": "@primersystems/x402",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "TypeScript SDK for x402 payments - pay and charge for APIs with stablecoins. OpenClaw compatible.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -29,7 +29,10 @@
     "ai-agents",
     "openclaw",
     "moltbot",
-    "clawdbot"
+    "clawdbot",
+    "bittensor",
+    "tao",
+    "chutes"
   ],
   "author": "Primer Systems <support@primer.systems>",
   "license": "MIT",
@@ -54,6 +57,7 @@
     "cli.js",
     "testing.js",
     "testing/",
+    "templates/",
     "examples/",
     "README.md",
     "LICENSE"

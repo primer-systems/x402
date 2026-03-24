@@ -382,6 +382,7 @@ npx @primersystems/x402 <command> [options]
 | `probe <url>` | Check if URL supports x402 payments |
 | `pay <url>` | Make a payment to a 402 endpoint |
 | `pay <url> --dry-run` | Preview payment without paying |
+| `create <template> [dir]` | Scaffold a project from template |
 | `networks` | List supported networks |
 | `facilitator` | Show facilitator info |
 | `openclaw init` | Set up x402 for OpenClaw agents |
@@ -514,7 +515,58 @@ npm install -g @primersystems/x402
 x402 openclaw init
 ```
 
+## Bittensor Integration
+
+The SDK includes templates for integrating with [Bittensor](https://bittensor.com) subnets, enabling pay-per-inference access to decentralized AI.
+
+### Chutes Proxy
+
+Scaffold a pay-per-inference proxy for [Chutes AI](https://chutes.ai) (Bittensor Subnet 64):
+
+```bash
+npx @primersystems/x402 create chutes-proxy my-ai-proxy
+cd my-ai-proxy
+npm install
+```
+
+This creates a ready-to-deploy proxy that:
+- Accepts USDC payments on Base via x402
+- Forwards requests to Chutes API for AI inference
+- Supports all Chutes models (DeepSeek, Qwen, Llama, etc.)
+- Deploys free on Cloudflare Workers
+
+Configure and run:
+
+```bash
+cp .env.example .env
+# Edit .env with your Chutes API key and wallet address
+npm run dev
+```
+
+Deploy to Cloudflare Workers:
+
+```bash
+wrangler login
+wrangler secret put CHUTES_API_KEY
+wrangler secret put WALLET_ADDRESS
+npm run deploy
+```
+
+See the generated `README.md` for full documentation.
+
+### Why Bittensor + x402?
+
+- **No TAO required**: Users pay with USDC instead of needing Bittensor tokens
+- **No subscriptions**: True pay-per-request micropayments
+- **Decentralized AI**: Access Bittensor's distributed inference network
+- **Your margin**: Set your own pricing above Chutes' cost
+
 ## Changelog
+
+### v0.7.0
+- **Bittensor integration**: New `x402 create chutes-proxy` command to scaffold a pay-per-inference proxy for Bittensor Chutes AI
+- **Project scaffolding**: CLI now supports project templates via `x402 create <template>`
+- Deploy to Cloudflare Workers (free tier) or any Node.js host
 
 ### v0.6.0
 - **SKALE network support**: Added SKALE Base (`eip155:1187947933`) and SKALE Base Sepolia (`eip155:324705682`) networks

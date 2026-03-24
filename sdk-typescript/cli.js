@@ -40,6 +40,9 @@ COMMANDS:
   probe <url>                Check if URL supports x402 payments
   pay <url>                  Make a payment to a 402 endpoint
 
+  create <template> [dir]    Scaffold a new x402 project from template
+                             Templates: chutes-proxy
+
   networks                   List supported networks
   facilitator                Show facilitator info
 
@@ -66,6 +69,7 @@ EXAMPLES:
   x402 wallet balance 0x742d35Cc6634C0532925a3b844Bc9e7595f...
   x402 probe https://api.example.com/paid-endpoint
   x402 pay https://api.example.com/paid-endpoint --max-amount 0.10
+  x402 create chutes-proxy my-ai-proxy
   x402 openclaw init
 `);
 }
@@ -514,6 +518,132 @@ async function cmdOpenClawStatus(options) {
 }
 
 // ============================================
+// Create / Scaffold Commands
+// ============================================
+
+const TEMPLATES = {
+  'chutes-proxy': {
+    name: 'Chutes x402 Proxy',
+    description: 'Pay-per-inference proxy for Bittensor Chutes AI'
+  }
+};
+
+async function cmdCreate(template, targetDir, options) {
+  if (!template) {
+    console.log('\n📦 Available Templates:\n');
+    for (const [name, info] of Object.entries(TEMPLATES)) {
+      console.log(`  ${name.padEnd(20)} ${info.description}`);
+    }
+    console.log('\nUsage: x402 create <template> [directory]\n');
+    console.log('Example: x402 create chutes-proxy my-ai-proxy\n');
+    return;
+  }
+
+  if (!TEMPLATES[template]) {
+    console.error(`\n❌ Unknown template: ${template}`);
+    console.log('\nAvailable templates:');
+    for (const name of Object.keys(TEMPLATES)) {
+      console.log(`  - ${name}`);
+    }
+    process.exit(1);
+  }
+
+  const dir = targetDir || template;
+
+  switch (template) {
+    case 'chutes-proxy':
+      await scaffoldChutesProxy(dir, options);
+      break;
+    default:
+      console.error(`Template ${template} not implemented`);
+      process.exit(1);
+  }
+}
+
+async function scaffoldChutesProxy(targetDir, options) {
+  console.log(`\n🚀 Creating Chutes x402 Proxy in ./${targetDir}\n`);
+
+  // Check if directory already exists
+  if (fs.existsSync(targetDir)) {
+    console.error(`❌ Directory '${targetDir}' already exists.`);
+    console.error('   Choose a different name or delete the existing directory.');
+    process.exit(1);
+  }
+
+  // Get the templates directory (relative to this CLI file)
+  const cliDir = __dirname;
+  const templatesDir = path.join(cliDir, 'templates', 'chutes-proxy');
+
+  // Check if templates exist (for npx usage, templates are bundled)
+  if (!fs.existsSync(templatesDir)) {
+    console.error('❌ Templates not found. This may be a packaging issue.');
+    console.error(`   Expected: ${templatesDir}`);
+    process.exit(1);
+  }
+
+  // Create target directory structure
+  fs.mkdirSync(targetDir, { recursive: true });
+  fs.mkdirSync(path.join(targetDir, 'src'), { recursive: true });
+
+  // Copy template files
+  const filesToCopy = [
+    'README.md',
+    'package.json',
+    'tsconfig.json',
+    'wrangler.toml',
+    '.env.example',
+    'src/index.ts'
+  ];
+
+  for (const file of filesToCopy) {
+    const srcPath = path.join(templatesDir, file);
+    const destPath = path.join(targetDir, file);
+
+    if (fs.existsSync(srcPath)) {
+      // Ensure destination directory exists
+      const destDir = path.dirname(destPath);
+      if (!fs.existsSync(destDir)) {
+        fs.mkdirSync(destDir, { recursive: true });
+      }
+
+      fs.copyFileSync(srcPath, destPath);
+      console.log(`  ✓ ${file}`);
+    } else {
+      console.log(`  ⚠ ${file} (not found in template)`);
+    }
+  }
+
+  // Create .gitignore
+  const gitignore = `node_modules/
+dist/
+.env
+.dev.vars
+.wrangler/
+`;
+  fs.writeFileSync(path.join(targetDir, '.gitignore'), gitignore);
+  console.log('  ✓ .gitignore');
+
+  // Print next steps
+  console.log('\n✅ Project created!\n');
+  console.log('Next steps:\n');
+  console.log(`  cd ${targetDir}`);
+  console.log('  npm install');
+  console.log('  cp .env.example .env');
+  console.log('  # Edit .env with your Chutes API key and wallet address');
+  console.log('  npm run dev\n');
+  console.log('Deploy to Cloudflare Workers (free):\n');
+  console.log('  wrangler login');
+  console.log('  wrangler secret put CHUTES_API_KEY');
+  console.log('  wrangler secret put WALLET_ADDRESS');
+  console.log('  npm run deploy\n');
+  console.log('📖 See README.md for full documentation\n');
+  console.log('Links:');
+  console.log('  • Chutes AI: https://chutes.ai');
+  console.log('  • x402 Protocol: https://x402.org');
+  console.log('  • Bittensor: https://bittensor.com\n');
+}
+
+// ============================================
 // Main
 // ============================================
 
@@ -573,6 +703,10 @@ async function main() {
             console.error(`Unknown openclaw command: ${parsed.subcommand}`);
             process.exit(1);
         }
+        break;
+
+      case 'create':
+        await cmdCreate(parsed.subcommand, parsed.positional[0], parsed.options);
         break;
 
       default:

@@ -1,0 +1,17 @@
+name = "chutes-x402-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Development settings
+[dev]
+port = 8787
+
+# Environment variables (non-secret defaults)
+[vars]
+NETWORK = "base"
+FACILITATOR_URL = "https://x402.primer.systems"
+PRICE_PER_1K_TOKENS = "0.001"
+
+# Secrets (set via `wrangler secret put`):
+# - CHUTES_API_KEY
+# - WALLET_ADDRESS

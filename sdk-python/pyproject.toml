@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "primer-x402"
-version = "0.6.0"
+version = "0.7.0"
 description = "Python SDK for x402 payments - pay and charge for APIs with stablecoins. OpenClaw compatible."
 readme = "README.md"
 license = {text = "MIT"}
@@ -27,7 +27,10 @@ keywords = [
     "ai-agents",
     "openclaw",
     "moltbot",
-    "clawdbot"
+    "clawdbot",
+    "bittensor",
+    "tao",
+    "chutes"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -81,6 +84,9 @@ Issues = "https://github.com/primer-systems/x402/issues"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["primer_x402*"]
+
+[tool.setuptools.package-data]
+primer_x402 = ["templates/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

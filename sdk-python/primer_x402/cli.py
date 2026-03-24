@@ -369,6 +369,119 @@ def cmd_openclaw_status(args):
     print("")
 
 
+# ============================================
+# Create / Scaffold Commands
+# ============================================
+
+TEMPLATES = {
+    "chutes-proxy": {
+        "name": "Chutes x402 Proxy",
+        "description": "Pay-per-inference proxy for Bittensor Chutes AI"
+    }
+}
+
+
+def cmd_create(args):
+    """Create a new project from template."""
+    template = args.template
+    target_dir = args.directory or template
+
+    if not template:
+        print("\nAvailable Templates:\n")
+        for name, info in TEMPLATES.items():
+            print(f"  {name:<20} {info['description']}")
+        print("\nUsage: x402 create <template> [directory]")
+        print("\nExample: x402 create chutes-proxy my-ai-proxy\n")
+        return
+
+    if template not in TEMPLATES:
+        print(f"\nUnknown template: {template}")
+        print("\nAvailable templates:")
+        for name in TEMPLATES:
+            print(f"  - {name}")
+        sys.exit(1)
+
+    if template == "chutes-proxy":
+        scaffold_chutes_proxy(target_dir)
+    else:
+        print(f"Template {template} not implemented")
+        sys.exit(1)
+
+
+def scaffold_chutes_proxy(target_dir: str):
+    """Scaffold a Chutes x402 proxy project."""
+    import shutil
+
+    print(f"\nCreating Chutes x402 Proxy in ./{target_dir}\n")
+
+    target_path = Path(target_dir)
+
+    # Check if directory already exists
+    if target_path.exists():
+        print(f"Error: Directory '{target_dir}' already exists.")
+        print("   Choose a different name or delete the existing directory.")
+        sys.exit(1)
+
+    # Get templates directory (relative to this module)
+    templates_dir = Path(__file__).parent / "templates" / "chutes-proxy"
+
+    if not templates_dir.exists():
+        print("Error: Templates not found. This may be a packaging issue.")
+        print(f"   Expected: {templates_dir}")
+        sys.exit(1)
+
+    # Create target directory
+    target_path.mkdir(parents=True, exist_ok=True)
+
+    # Copy template files
+    files_to_copy = [
+        "README.md",
+        "requirements.txt",
+        "main.py",
+        ".env.example",
+        "Dockerfile"
+    ]
+
+    for filename in files_to_copy:
+        src = templates_dir / filename
+        dst = target_path / filename
+        if src.exists():
+            shutil.copy2(src, dst)
+            print(f"  + {filename}")
+        else:
+            print(f"  ! {filename} (not found in template)")
+
+    # Create .gitignore
+    gitignore_content = """__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+"""
+    (target_path / ".gitignore").write_text(gitignore_content)
+    print("  + .gitignore")
+
+    # Print next steps
+    print("\nProject created!\n")
+    print("Next steps:\n")
+    print(f"  cd {target_dir}")
+    print("  pip install -r requirements.txt")
+    print("  cp .env.example .env")
+    print("  # Edit .env with your Chutes API key and wallet address")
+    print("  uvicorn main:app --reload\n")
+    print("Deploy with Docker:\n")
+    print("  docker build -t chutes-x402-proxy .")
+    print("  docker run -p 8000:8000 --env-file .env chutes-x402-proxy\n")
+    print("See README.md for full documentation\n")
+    print("Links:")
+    print("  - Chutes AI: https://chutes.ai")
+    print("  - x402 Protocol: https://x402.org")
+    print("  - Bittensor: https://bittensor.com\n")
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -418,6 +531,11 @@ def main():
     facilitator_parser = subparsers.add_parser("facilitator", help="Show facilitator info")
     facilitator_parser.add_argument("--json", action="store_true")
 
+    # create command
+    create_parser = subparsers.add_parser("create", help="Scaffold a new x402 project from template")
+    create_parser.add_argument("template", nargs="?", help="Template name (e.g., chutes-proxy)")
+    create_parser.add_argument("directory", nargs="?", help="Target directory (default: template name)")
+
     # openclaw commands
     openclaw_parser = subparsers.add_parser("openclaw", help="OpenClaw integration")
     openclaw_subparsers = openclaw_parser.add_subparsers(dest="openclaw_command")
@@ -452,6 +570,8 @@ def main():
             cmd_networks(args)
         elif args.command == "facilitator":
             cmd_facilitator(args)
+        elif args.command == "create":
+            cmd_create(args)
         elif args.command == "openclaw":
             if args.openclaw_command == "init":
                 cmd_openclaw_init(args)
