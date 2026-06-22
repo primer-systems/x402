@@ -1,1 +1,1 @@
-# primer_x402 tests
+# Tests for primer-x402
