@@ -5,7 +5,7 @@
 
 **Primer ecosystem toolkit for x402.** Built on the [official x402 SDK](https://github.com/coinbase/x402).
 
-This package extends the official x402 SDK with Primer-specific infrastructure: our facilitator, SKALE network support, and Prism ERC-20 settlement.
+This package extends the official x402 SDK with Primer-specific infrastructure: our facilitator, SKALE network support, Robinhood Chain support, and Prism ERC-20 settlement.
 
 ## Installation
 
@@ -39,6 +39,19 @@ const routes = {
     price: '$0.001',
     network: skaleNetworks.base,  // eip155:1187947933
     // No gas fees for payers on SKALE
+  }
+};
+```
+
+### Robinhood Chain
+
+```typescript
+import { robinhoodNetworks } from '@primersystems/x402';
+
+const routes = {
+  '/api/data': {
+    price: '$0.001',
+    network: robinhoodNetworks.mainnet,  // eip155:4663
   }
 };
 ```
@@ -120,6 +133,10 @@ Payments are verified via Primer's facilitator and accepted on Base mainnet. Edi
 | `skaleNetworks.baseSepolia` | `"eip155:324705682"` |
 | `skaleRpcUrls.base` | `"https://skale-base.skalenodes.com/v1/base"` |
 | `skaleRpcUrls.baseSepolia` | `"https://base-sepolia-testnet.skalenodes.com/v1/..."` |
+| `robinhoodNetworks.mainnet` | `"eip155:4663"` |
+| `robinhoodNetworks.testnet` | `"eip155:46630"` |
+| `robinhoodRpcUrls.mainnet` | `"https://rpc.mainnet.chain.robinhood.com"` |
+| `robinhoodRpcUrls.testnet` | `"https://rpc.testnet.chain.robinhood.com"` |
 
 ### Prism Settlement
 
@@ -139,6 +156,8 @@ Payments are verified via Primer's facilitator and accepted on Base mainnet. Edi
 | Base Sepolia | eip155:84532 | ✓ Primer |
 | SKALE Base | eip155:1187947933 | ✓ Primer |
 | SKALE Base Sepolia | eip155:324705682 | ✓ Primer |
+| Robinhood Chain | eip155:4663 | ✓ Primer |
+| Robinhood Chain Testnet | eip155:46630 | ✓ Primer |
 
 ## Architecture
 
@@ -153,6 +172,7 @@ This SDK is a **companion** to the official x402 SDK, not a replacement:
 │  @primersystems/x402                    │  ← This package (ecosystem)
 │  • Primer facilitator                   │
 │  • SKALE networks                       │
+│  • Robinhood Chain                      │
 │  • Prism settlement                     │
 │  • CLI scaffolding (Chutes proxy, etc.) │
 └─────────────────────────────────────────┘

@@ -13,6 +13,16 @@ export const skaleRpcUrls = {
   baseSepolia: "https://base-sepolia-testnet.skalenodes.com/v1/jubilant-horrible-ancha",
 } as const;
 
+export const robinhoodNetworks = {
+  mainnet: "eip155:4663",
+  testnet: "eip155:46630",
+} as const;
+
+export const robinhoodRpcUrls = {
+  mainnet: "https://rpc.mainnet.chain.robinhood.com",
+  testnet: "https://rpc.testnet.chain.robinhood.com",
+} as const;
+
 /**
  * Creates an HTTPFacilitatorClient pre-configured for the Primer facilitator.
  *

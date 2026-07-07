@@ -5,7 +5,7 @@
 
 **Primer ecosystem toolkit for x402.** Built on the [official x402 SDK](https://pypi.org/project/x402/).
 
-This package extends the official x402 SDK with Primer-specific infrastructure: our facilitator, SKALE network support, and Prism ERC-20 settlement.
+This package extends the official x402 SDK with Primer-specific infrastructure: our facilitator, SKALE network support, Robinhood Chain support, and Prism ERC-20 settlement.
 
 ## Installation
 
@@ -39,6 +39,16 @@ from primer_x402 import skale_networks
 # Use SKALE for gas-free transactions
 network = skale_networks.base           # "eip155:1187947933"
 network = skale_networks.base_sepolia   # "eip155:324705682"
+```
+
+### Robinhood Chain
+
+```python
+from primer_x402 import robinhood_networks
+
+# Use Robinhood Chain
+network = robinhood_networks.mainnet    # "eip155:4663"
+network = robinhood_networks.testnet    # "eip155:46630"
 ```
 
 ### Prism ERC-20 Settlement
@@ -127,6 +137,10 @@ Payments are verified via Primer's facilitator and accepted on Base mainnet. Edi
 | `skale_networks.base_sepolia` | `"eip155:324705682"` |
 | `skale_rpc_urls.base` | `"https://skale-base.skalenodes.com/v1/base"` |
 | `skale_rpc_urls.base_sepolia` | `"https://base-sepolia-testnet.skalenodes.com/v1/..."` |
+| `robinhood_networks.mainnet` | `"eip155:4663"` |
+| `robinhood_networks.testnet` | `"eip155:46630"` |
+| `robinhood_rpc_urls.mainnet` | `"https://rpc.mainnet.chain.robinhood.com"` |
+| `robinhood_rpc_urls.testnet` | `"https://rpc.testnet.chain.robinhood.com"` |
 
 ### Prism Settlement
 
@@ -148,6 +162,8 @@ Payments are verified via Primer's facilitator and accepted on Base mainnet. Edi
 | Base Sepolia | eip155:84532 | ✓ Primer |
 | SKALE Base | eip155:1187947933 | ✓ Primer |
 | SKALE Base Sepolia | eip155:324705682 | ✓ Primer |
+| Robinhood Chain | eip155:4663 | ✓ Primer |
+| Robinhood Chain Testnet | eip155:46630 | ✓ Primer |
 
 ## Links
 

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-07-05
+
+### Added
+- `robinhoodNetworks` - CAIP-2 identifiers for Robinhood Chain (mainnet and testnet)
+- `robinhoodRpcUrls` - RPC endpoints for Robinhood Chain
+
 ## [1.0.0] - 2025-06-22
 
 ### Added

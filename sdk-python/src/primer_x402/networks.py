@@ -1,6 +1,6 @@
-"""SKALE network constants.
+"""Network constants for chains supported by Primer.
 
-Provides CAIP-2 network identifiers for SKALE chains supported by Primer.
+Provides CAIP-2 network identifiers and RPC URLs for SKALE and Robinhood Chain.
 """
 
 from dataclasses import dataclass
@@ -22,5 +22,23 @@ class SkaleRpcUrls:
     base_sepolia: str = "https://base-sepolia-testnet.skalenodes.com/v1/jubilant-horrible-ancha"
 
 
+@dataclass(frozen=True)
+class RobinhoodNetworks:
+    """Robinhood Chain network identifiers in CAIP-2 format."""
+
+    mainnet: str = "eip155:4663"
+    testnet: str = "eip155:46630"
+
+
+@dataclass(frozen=True)
+class RobinhoodRpcUrls:
+    """Robinhood Chain RPC endpoints."""
+
+    mainnet: str = "https://rpc.mainnet.chain.robinhood.com"
+    testnet: str = "https://rpc.testnet.chain.robinhood.com"
+
+
 skale_networks = SkaleNetworks()
 skale_rpc_urls = SkaleRpcUrls()
+robinhood_networks = RobinhoodNetworks()
+robinhood_rpc_urls = RobinhoodRpcUrls()
